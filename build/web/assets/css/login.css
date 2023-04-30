@@ -1,0 +1,17 @@
+@media screen and (max-width: 576px) {
+  /* Reglas de estilo para pantallas más pequeñas que 576px */
+  .form-label {
+    font-size: 0.8rem; /* Reducir el tamaño de la fuente para etiquetas */
+  }
+  
+  .form-control {
+    width: 100%; /* Ajustar el ancho de los campos de entrada */
+    font-size: 0.9rem; /* Reducir el tamaño de la fuente para campos de entrada */
+    padding: 0.375rem 0.75rem; /* Reducir el relleno vertical */
+  }
+  
+  .btn {
+    font-size: 0.9rem; /* Reducir el tamaño de la fuente para botones */
+    padding: 0.375rem 0.75rem; /* Reducir el relleno vertical */
+  }
+}

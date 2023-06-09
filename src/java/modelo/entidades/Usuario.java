@@ -1,5 +1,8 @@
 package modelo.entidades;
 
+import java.util.List;
+import modelo.dao.ListaDeseosDAO;
+
 /**
  *
  * @author Angel
@@ -128,4 +131,5 @@ public class Usuario {
     public void setRol(String rol) {
         this.rol = rol;
     }
+    
 }    

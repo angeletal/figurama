@@ -4,12 +4,31 @@ window.onload = ejecutar;
 var hayError = false;
 
 function ejecutar() {
-    document.getElementById("enviar").addEventListener('click', validarNombre, false);
-    document.getElementById("enviar").addEventListener('click', validarTelefono, false);
     document.getElementById("enviar").addEventListener('click', validarEmail, false);
+    document.getElementById("enviar").addEventListener('click', validarNombre, false);
     document.getElementById("enviar").addEventListener('click', validarApellidos, false);
+    document.getElementById("enviar").addEventListener('click', validarTelefono, false);
     document.getElementById("enviar").addEventListener('click', validarContra, false);
+
+    var togglePassword = document.getElementById("togglePassword");
+    var passwordInput = document.getElementById("contra");
+
+    togglePassword.addEventListener('click', function () {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            togglePassword.classList.remove("fa-eye");
+            togglePassword.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            togglePassword.classList.remove("fa-eye-slash");
+            togglePassword.classList.add("fa-eye");
+        }
+    });
+  
 }
+
+
+
 
 
 function validarNombre(e) {
@@ -19,14 +38,19 @@ function validarNombre(e) {
     if (nombre.value === null || nombre.value.trim().length === 0) {
         errorNombre.innerHTML = "Este campo no puede estar vacío.";
 
-    } else if (nombre.value.trim().length > 30) {
-        errorNombre.innerHTML = "Error, la longitud de este campo no puede ser superior a 30 caracteres.";
 
+
+
+
+
+    } else if (nombre.value.trim().length > 30) {
+        errorNombre.innerHTML = "Este campo no puede tener una longitud superior a 30 caracteres.";
     } else {
         nombre.classList.remove("error");
         errorNombre.innerHTML = "";
         return true;
     }
+    nombre.value = "";
     nombre.classList.add("error");
     if (!hayError) {
         nombre.focus();
@@ -44,6 +68,7 @@ function validarTelefono(e) {
 
     if (telefono.value === null || telefono.value.trim().length === 0) {
         errorTelefono.innerHTML = "Este campo no puede estar vacío.";
+
     }// else if (!/^\d{3}-{1}\d{2}-{1}\d{2}-{1}\d{2}$/.test(telefono.value.trim())) {
     // errorTelefono.innerHTML += " - Error de formato. El formato a usar es el siguiente: 123-45-67-89.";} }
     else {
@@ -51,6 +76,7 @@ function validarTelefono(e) {
         errorTelefono.innerHTML = "";
         return true;
     }
+    telefono.value = "";
     telefono.classList.add("error");
     if (!hayError) {
         telefono.focus();
@@ -69,12 +95,13 @@ function validarEmail(e) {
     if (email.value === null || email.value.trim().length === 0) {
         errorEmail.innerHTML = "Este campo no puede estar vacío.";
     } else if (!/^\S+@\S+\.\S+$/.test(email.value.trim())) {
-        errorEmail.innerHTML = "Error de formato.<br>El formato a usar es el siguiente: texto@texto.com.";
-     } else {
+        errorEmail.innerHTML = "Este campo debe tener un formato de email válido";
+    } else {
         email.classList.remove("error");
         errorEmail.innerHTML = "";
         return true;
     }
+    email.value = "";
     email.classList.add("error");
     if (!hayError) {
         email.focus();
@@ -97,13 +124,13 @@ function validarApellidos(e) {
         errorApellido.innerHTML = "Este campo no puede estar vacío.";
 
     } else if (apellido.value.trim().length > 60) {
-        errorApellido.innerHTML = "Error, la longitud de este campo no puede ser superior a 60 caracteres.";
-
+        errorApellido.innerHTML = "Este campo no puede tener una longitud superior a 60 caracteres.";
     } else {
         apellido.classList.remove("error");
         errorApellido.innerHTML = "";
         return true;
     }
+    apellido.value = "";
     apellido.classList.add("error");
     if (!hayError) {
         apellido.focus();
@@ -122,17 +149,18 @@ function validarContra(e) {
     if (contra.value === null || contra.value.trim().length === 0) {
         errorContra.innerHTML = "Este campo no puede estar vacío.";
     } else if (contra.value.trim().length > 10) {
-        errorContra.innerHTML = "Este campo no puede tener más de 10 carácteres.";
+        errorContra.innerHTML = "Este campo no puede tener una longitud superior a 10 caracteres.";
     } else if (contra.value.trim().length < 5) {
         errorContra.innerHTML = "Este campo debe tener al menos 5 carácteres.";
-    
+
     } else if (!/^(?=.*\d)(?=.*[a-zñA-ZÑáéíóúÁÉÍÓÚ])(?=.*[A-ZÁÉÍÓÚÜ])[a-zA-ZñÑáéíóúÁÉÍÓÚ\d]*$/.test(contra.value.trim())) {
         errorContra.innerHTML = "<p class='text-center'>La contraseña puede contener letras (mayúsculas y minúsculas, incluyendo letras acentuadas y la Ñ), dígitos y caracteres especiales incluyendo al menos al menos <em>un dígito</u> y <em>una letra mayúscula</u>.";
-     } else {
+    } else {
         contra.classList.remove("error");
         errorContra.innerHTML = "";
         return true;
     }
+    contra.value = "";
     contra.classList.add("error");
     if (!hayError) {
         contra.focus();

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package modelo.entidades;
 
 /**
@@ -16,16 +13,17 @@ public class Conexion {
 
     private Connection conexion;
 
-    public Conexion() {
-        try {
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-            //Mi bd no permite crear usuarios así que he tenido que entrar por root
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/figurama", "root", "");
+   public Conexion() {
+    try {
+        DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
+        // Establecer la codificación de caracteres a UTF-8
+        String url = "jdbc:mysql://localhost:3306/Figurama?useUnicode=true&characterEncoding=UTF-8";
+        conexion = DriverManager.getConnection(url, "root", "");
 
-        } catch (SQLException e) {
-            System.err.println("Error al establecer la conexión: " + e.getMessage());
-        }
+    } catch (SQLException e) {
+        System.err.println("Error al establecer la conexión: " + e.getMessage());
     }
+}
 
     public Connection getConexion() {
         return conexion;

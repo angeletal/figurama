@@ -2,22 +2,23 @@ package controladores;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import modelo.dao.CestaDAO;
 import modelo.dao.UsuarioDAO;
-import modelo.entidades.Figura;
+import modelo.entidades.CargarDatos;
 import modelo.entidades.Usuario;
+import modelo.entidades.Cesta;
 
 /**
  *
  * @author Angel
  */
-@WebServlet(name = "Login", urlPatterns = {"/login2.jsp"})
+@WebServlet(name = "Login", urlPatterns = {"/login"})
 public class Login extends HttpServlet {
 
     /**
@@ -40,25 +41,31 @@ public class Login extends HttpServlet {
             //Se obtienen los usuarios de la lista obtenida por el DAO
             UsuarioDAO udao = new UsuarioDAO();
             List<Usuario> usuarios = udao.getListaUsuarios();
-
+            HttpSession sesion = request.getSession();
             for (Usuario usuario : usuarios) {
                 if (usuario.getEmail().equalsIgnoreCase(email)
                         && usuario.getContra().equals(contra)) {
                     //Añado a la sesion el usuario que accede para saber en todo momento quien es
-                    request.getSession().setAttribute("usuario", usuario);
                     //Si el usuario es admin que vaya al menu de admin, sino al de árbitros
                     if (udao.getUsuario(email).getRol().equals("Admin")) {
-                        response.sendRedirect("pepe.jsp");
+                        response.sendRedirect("admin.jsp");
+                        sesion.setAttribute("usuario", usuario);
+
                         return;
                     } else {
-                           
-                      /*  cosas continuar cesta */
-                        CestaDAO cdao = new CestaDAO();
-                     //   if(cdao.obtenerCantidadArticulosCesta(usuario.getId())!=0){
-                        Map<Figura, Integer> cesta = cdao.obtenerCesta(usuario.getId());
-                        
-                        request.getSession().setAttribute("cesta", cesta);
-                        response.sendRedirect("index.jsp");
+                        //Si tiene una cesta ya creada y no esta logado ya, que la cesta se vuelque en la del usuario donde se ha logado
+                        if (sesion.getAttribute("cesta") != null && sesion.getAttribute("usuario") == null) {
+                            CestaDAO cdao = new CestaDAO();
+                            cdao.guardarCesta(((Cesta) sesion.getAttribute("cesta")).getArticulos(), usuario.getId());
+                            sesion.removeAttribute("cesta");
+                        }
+                        sesion.setAttribute("usuario", usuario);
+
+                        //Cargamos la cesta y la lista de deseos del usuario en la BD
+                        CargarDatos cargar = new CargarDatos(request);
+                        cargar.cargarCesta();
+                        cargar.cargarListaDeseos();
+                        response.sendRedirect(sesion.getAttribute("redirect").toString());
                         return;
                     }
                 }
@@ -89,6 +96,8 @@ public class Login extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+
         processRequest(request, response);
     }
 
@@ -103,6 +112,9 @@ public class Login extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
+
         processRequest(request, response);
     }
 

@@ -7,10 +7,25 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
+<%
+    //Inicializamos la página a la que se va a ir 
+        String redirect = request.getParameter("redirect");
+
+        if (redirect == null) {
+            redirect = "index.jsp";
+        }
+
+        request.getSession().setAttribute("redirect", redirect);
+    
+%>
+
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
         <title>Figurama - Login</title>
 
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -18,7 +33,6 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link href="assets/css/styles.css" rel="stylesheet">
         <link href="assets/css/login.css" rel="stylesheet">
-
     </head>
     <body>
 
@@ -27,32 +41,30 @@
                 <div class="col-10 col-sm-8 col-md-6 col-lg-6 offset-1 offset-sm-2 offset-md-3 offset-lg-0 align-self-center d-lg-flex align-self-lg-stretch p-5 rounded rounded-lg-0 my-5 my-lg-0"  style="background-color: rgb(235, 216, 214)" 
                      id="login-block">
                     <div class="m-auto w-lg-75 w-xl-50">
+                        <div><a href="${sessionScope.redirect}">Volver</a></div>
+
                         <a href="index.jsp"><img src="assets/images/logo.jpg" alt="alt" class="img-fluid d-flex"/></a>
-                        <form class="align-items-center" action="login2.jsp" method="post">
+                        <form class="align-items-center" action="login" method="post">
                             <div class="form-group mb-3"><label class="form-label">Email</label><input class="form-control" type="email" name="email" value="${email}"></div>
                             <div class="form-group mb-3"><label class="form-label">Contraseña</label><input class="form-control" name="contra" type="password" ></div>
-                           
+
                             <!-- Mensaje de error -->
                             <c:if test="${not empty error}">
                                 <p class="mt-3 text-center" style="color: red">${error}</p>
                             </c:if> 
-                            
+
                             <div class="d-flex flex-column">
-                                <!-- cosas - Aquí se enviarán los datos a un servlet que compruebe que el usuario es correcto
-                                o no, en caso de que no lo sea vuelve a esta página indicando algún mensaje de error-->
                                 <input class="btn btn-primary mt-2 p-2" type="submit" value="Acceder"/>
                         </form>
-                        
+
                         <a class="btn btn-primary mt-2 p-2" href="register.jsp">¿Eres nuevo/a? Regístrate aquí</a>
-                       
+
 
                     </div>
                 </div>
             </div>
 
             <!-- Div que contiene la imagen de la zona derecha, esta imagen se pone fixed al hacerse responsive  -->
-
-
             <div class="col-lg-6 d-flex align-items-end" id="bg-block" 
                  <div style='background-image:url("assets/images/bg.jpg");background-size:cover;background-position:center center;background-repeat:no-repeat;'>
             </div>

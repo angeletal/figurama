@@ -1,17 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controladores;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import modelo.dao.UsuarioDAO;
 import modelo.entidades.Usuario;
 
@@ -50,16 +44,19 @@ public class Registrar extends HttpServlet {
         String direccion = null;
         String telefono = request.getParameter("telefono").trim();
         String rol = "común";
-        String error = "";
-        String mensaje = "";
         UsuarioDAO udao = new UsuarioDAO();
+        String redirect = request.getParameter("redirect");
 
         if (!udao.usuarioExiste(email)) {
             Usuario nuevo = new Usuario(nombre, apellidos, contra, email, direccion, telefono, 0, false, rol);
             udao.anadirUsuario(nuevo);
-            response.sendRedirect("index.jsp");
+            request.setAttribute("cuentaCreada", "La cuenta con email<br>" + email + "<br>ha sido creada satisfactoriamente.");
+
+        
+            response.sendRedirect("login.jsp");
             return;
         } else {
+
             request.setAttribute("email", email);
             request.setAttribute("nombre", nombre);
             request.setAttribute("apellidos", apellidos);
@@ -68,6 +65,7 @@ public class Registrar extends HttpServlet {
             request.setAttribute("error", "Error, ya existe una cuenta con el email introducido");
 
         }
+        request.setAttribute("redirect", redirect);
 
         getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
     }
@@ -84,6 +82,8 @@ public class Registrar extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+
         processRequest(request, response);
     }
 
@@ -98,6 +98,8 @@ public class Registrar extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+
         processRequest(request, response);
     }
 

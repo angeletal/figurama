@@ -48,7 +48,7 @@ public class Registrar extends HttpServlet {
         String redirect = request.getParameter("redirect");
 
         if (!udao.usuarioExiste(email)) {
-            Usuario nuevo = new Usuario(nombre, apellidos, contra, email, direccion, telefono, 0, false, rol);
+            Usuario nuevo = new Usuario(nombre, apellidos, contra, email, direccion, telefono, rol);
             udao.anadirUsuario(nuevo);
             request.setAttribute("cuentaCreada", "La cuenta con email<br>" + email + "<br>ha sido creada satisfactoriamente.");
 
@@ -65,6 +65,7 @@ public class Registrar extends HttpServlet {
             request.setAttribute("error", "Error, ya existe una cuenta con el email introducido");
 
         }
+        udao.cerrarConexion();
         request.setAttribute("redirect", redirect);
 
         getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);

@@ -169,7 +169,7 @@ function generarDivFiguras(nombrePersonaje) {
 
     if (figuras.length !== 0) {
         // Mostrar las figuras en el contenedor
-        for (var i = 0; i < 4; i++) {
+        for (var i = 0; i < 2; i++) {
             var figura = figuras[i];
 
             // Crear elemento de figura
@@ -198,7 +198,7 @@ function generarDivFiguras(nombrePersonaje) {
             divFiguras.appendChild(figuraElement);
         }
         // Comprobar si hay más figuras por mostrar
-        if (figuras.length > 4) {
+        if (figuras.length > 2) {
             // Mostrar el botón de carga
             var loadMoreButton = document.createElement('button');
             loadMoreButton.classList.add("btn-primary");
@@ -228,8 +228,8 @@ function cargarMasFiguras(nombrePersonaje) {
     // Calcular la cantidad de figuras restantes por mostrar
     var remainingFiguresCount = figuras.length - displayedFiguresCount;
 
-    // Determinar la cantidad de figuras a cargar (máximo 4)
-    var loadCount = Math.min(4, remainingFiguresCount);
+    // Determinar la cantidad de figuras a cargar (máximo 2)
+    var loadCount = Math.min(2, remainingFiguresCount);
 
     // Obtener las figuras adicionales a cargar
     var additionalFigures = figuras.slice(displayedFiguresCount, displayedFiguresCount + loadCount);

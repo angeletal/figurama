@@ -24,6 +24,14 @@ public class SerieDAO {
     public SerieDAO() {
         this.conexion = new Conexion().getConexion();
     }
+    
+    public void cerrarConexion() {
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
+        }
+    }
 
     public Serie getSeriePorId(int id) {
         Serie serie = null;
@@ -32,7 +40,7 @@ public class SerieDAO {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                serie = new Serie(id, rs.getString("imagenURL"), rs.getString("nombre"), rs.getString("descripcion"));
+                serie = new Serie(id, rs.getString("imagenURL"), rs.getString("nombre"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,7 +55,7 @@ public class SerieDAO {
             ps.setString(1, nombre.toLowerCase());
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                serie = new Serie(rs.getInt("id"), rs.getString("imagenURL"), rs.getString("nombre"), rs.getString("descripcion"));
+                serie = new Serie(rs.getInt("id"), rs.getString("imagenURL"), rs.getString("nombre"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -62,7 +70,7 @@ public class SerieDAO {
             PreparedStatement ps = conexion.prepareStatement("SELECT * FROM serie");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                serie = new Serie(rs.getInt("id"), rs.getString("imagenUrl"), rs.getString("nombre"), rs.getString("descripcion"));
+                serie = new Serie(rs.getInt("id"), rs.getString("imagenUrl"), rs.getString("nombre"));
                 series.add(serie);
                 }
         } catch (SQLException e) {

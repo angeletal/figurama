@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package modelo.entidades;
 
 import modelo.entidades.figura.Figura;
@@ -35,18 +32,21 @@ public class CargarDatos {
         FiguraDAO fdao = new FiguraDAO();
         List<Figura> figuras = fdao.getListaFiguras();
         sesion.setAttribute("figuras", figuras);
+        fdao.cerrarConexion();
     }
 
     public void cargarProveedores() {
         ProveedorDAO pdao = new ProveedorDAO();
         List<Proveedor> proveedores = pdao.getListaProveedores();
         sesion.setAttribute("proveedores", proveedores);
+        pdao.cerrarConexion();
     }
 
     public void cargarFranquicias() {
         SerieDAO sdao = new SerieDAO();
         List<Serie> series = sdao.getListaSeries();
         sesion.setAttribute("franquicias", series);
+        sdao.cerrarConexion();
     }
 
     public void cargarListaDeseos() {
@@ -55,6 +55,7 @@ public class CargarDatos {
             List<ArticuloListaDeseos> listaDeseos = lddao.obtenerListaDeseos(((Usuario) sesion.getAttribute("usuario")).getId());
             //cosas
             sesion.setAttribute("listaDeseos", listaDeseos);
+            lddao.cerrarConexion();
         }
     }
 
@@ -65,6 +66,7 @@ public class CargarDatos {
             if(!articulos.isEmpty()){
             Cesta cesta = new Cesta(articulos);
             sesion.setAttribute("cesta", cesta);
+            cdao.cerrarConexion();
         }}
     }
 

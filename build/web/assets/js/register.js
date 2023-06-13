@@ -24,7 +24,7 @@ function ejecutar() {
             togglePassword.classList.add("fa-eye");
         }
     });
-  
+
 }
 
 
@@ -37,10 +37,6 @@ function validarNombre(e) {
 
     if (nombre.value === null || nombre.value.trim().length === 0) {
         errorNombre.innerHTML = "Este campo no puede estar vacío.";
-
-
-
-
 
 
     } else if (nombre.value.trim().length > 30) {
@@ -69,9 +65,9 @@ function validarTelefono(e) {
     if (telefono.value === null || telefono.value.trim().length === 0) {
         errorTelefono.innerHTML = "Este campo no puede estar vacío.";
 
-    }// else if (!/^\d{3}-{1}\d{2}-{1}\d{2}-{1}\d{2}$/.test(telefono.value.trim())) {
-    // errorTelefono.innerHTML += " - Error de formato. El formato a usar es el siguiente: 123-45-67-89.";} }
-    else {
+    } else if (!/^\d{3}-\d{3}-\d{4}$/.test(telefono.value.trim())) {
+        errorTelefono.innerHTML = "Este campo debe tener un formato de número válido.<br>Ejemplo: 644826846";
+    } else {
         telefono.classList.remove("error");
         errorTelefono.innerHTML = "";
         return true;

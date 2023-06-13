@@ -53,7 +53,10 @@ public class VerFiguras extends HttpServlet {
             if(!figuras.isEmpty()){
             request.setAttribute("figurasP", figuras);
             }
+           request.setAttribute("serieP", pjdao.getSerie(nombre));
             request.setAttribute("nombre", nombre);
+            fdao.cerrarConexion();
+            pjdao.cerrarConexion();
             getServletContext().getRequestDispatcher("/personaje.jsp").forward(request, response);
 
         }

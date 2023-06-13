@@ -80,7 +80,7 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="#">Ver mis favoritos</a>
-                                    <a class="dropdown-item" href="#">Ver mis pedidos</a>
+                                    <a class="dropdown-item" href="pedidos">Ver mis pedidos</a>
                                     <a class="dropdown-item" href="#">Editar perfil</a>
                                     <a class="dropdown-item" href="CerrarSesion">Cerrar sesión</a>
                                 </div>

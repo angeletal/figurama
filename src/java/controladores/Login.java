@@ -47,31 +47,35 @@ public class Login extends HttpServlet {
                         && usuario.getContra().equals(contra)) {
                     //Añado a la sesion el usuario que accede para saber en todo momento quien es
                     //Si el usuario es admin que vaya al menu de admin, sino al de árbitros
-                    if (udao.getUsuario(email).getRol().equals("Admin")) {
-                        response.sendRedirect("admin.jsp");
-                        sesion.setAttribute("usuario", usuario);
 
+                    //Si tiene una cesta ya creada y no esta logado ya, que la cesta se vuelque en la del usuario donde se ha logado
+                    if (sesion.getAttribute("cesta") != null && sesion.getAttribute("usuario") == null) {
+                        CestaDAO cdao = new CestaDAO();
+                        cdao.guardarCesta(((Cesta) sesion.getAttribute("cesta")).getArticulos(), usuario.getId());
+                        sesion.removeAttribute("cesta");
+                        cdao.cerrarConexion();
+                    }
+                    sesion.setAttribute("usuario", usuario);
+
+                    //Cargamos la cesta y la lista de deseos del usuario en la BD
+                    CargarDatos cargar = new CargarDatos(request);
+                    cargar.cargarCesta();
+                    cargar.cargarListaDeseos();
+                    if (udao.getUsuario(email).getRol().equals("Admin")) {
+                        sesion.setAttribute("usuario", usuario);
+                        response.sendRedirect("admin");
                         return;
                     } else {
-                        //Si tiene una cesta ya creada y no esta logado ya, que la cesta se vuelque en la del usuario donde se ha logado
-                        if (sesion.getAttribute("cesta") != null && sesion.getAttribute("usuario") == null) {
-                            CestaDAO cdao = new CestaDAO();
-                            cdao.guardarCesta(((Cesta) sesion.getAttribute("cesta")).getArticulos(), usuario.getId());
-                            sesion.removeAttribute("cesta");
-                        }
-                        sesion.setAttribute("usuario", usuario);
-
-                        //Cargamos la cesta y la lista de deseos del usuario en la BD
-                        CargarDatos cargar = new CargarDatos(request);
-                        cargar.cargarCesta();
-                        cargar.cargarListaDeseos();
                         response.sendRedirect(sesion.getAttribute("redirect").toString());
                         return;
                     }
                 }
+
             }
             error = "Email o contraseña incorrectos";
             request.setAttribute("email", email);
+            udao.cerrarConexion();
+
         } else {
             if (request.getParameter("email") != null) {
                 String email = request.getParameter("email");
@@ -79,6 +83,7 @@ public class Login extends HttpServlet {
             }
             error = "Debe rellenar todos los campos";
         }
+
         request.setAttribute("error", error);
 
         getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);

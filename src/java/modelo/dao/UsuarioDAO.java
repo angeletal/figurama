@@ -24,15 +24,24 @@ public class UsuarioDAO {
     public UsuarioDAO() {
         this.conexion = new Conexion().getConexion();
     }
+    
+    public void cerrarConexion() {
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
+        }
+    }
 
     public Usuario getUsuario(String email) {
         Usuario usuario = null;
         try {
             PreparedStatement ps = conexion.prepareStatement("SELECT * FROM usuario WHERE email = ?");
             ps.setString(1, email);
+
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                usuario = new Usuario(rs.getString("nombre"), rs.getString("apellidos"), rs.getString("contrasena"), rs.getString("email"), rs.getString("direccion"), rs.getString("telefono"), rs.getInt("puntos"), rs.getBoolean("esBaja"), rs.getString("rol"));
+                usuario = new Usuario(rs.getString("nombre"), rs.getString("apellidos"), rs.getString("contrasena"), rs.getString("email"), rs.getString("direccion"), rs.getString("telefono"), rs.getString("rol"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,7 +56,7 @@ public class UsuarioDAO {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                usuario = new Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("apellidos"), rs.getString("contrasena"), rs.getString("email"), rs.getString("direccion"), rs.getString("telefono"), rs.getInt("puntos"), rs.getBoolean("esBaja"), rs.getString("rol"));
+                usuario = new Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("apellidos"), rs.getString("contrasena"), rs.getString("email"), rs.getString("direccion"), rs.getString("telefono"), rs.getString("rol"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,8 +80,6 @@ public class UsuarioDAO {
                 usuario.setEmail(rs.getString("email"));
                 usuario.setDireccion(rs.getString("direccion"));
                 usuario.setTelefono(rs.getString("telefono"));
-                usuario.setPuntos(rs.getInt("puntos"));
-                usuario.setEsBaja(rs.getBoolean("esBaja"));
                 usuario.setRol(rs.getString("rol"));
                 usuarios.add(usuario);
             }
@@ -100,7 +107,7 @@ public class UsuarioDAO {
     public boolean anadirUsuario(Usuario usuario) {
         boolean resultado = false;
 
-        String sql = "INSERT INTO usuario (nombre, apellidos, contrasena, email, direccion,telefono, puntos, esBaja, rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO usuario (nombre, apellidos, contrasena, email, direccion,telefono, rol) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setString(1, usuario.getNombre());
@@ -109,9 +116,7 @@ public class UsuarioDAO {
             ps.setString(4, usuario.getEmail());
             ps.setString(5, usuario.getDireccion());
             ps.setString(6, usuario.getTelefono());
-            ps.setInt(7, usuario.getPuntos());
-            ps.setBoolean(8, usuario.isEsBaja());
-            ps.setString(9, usuario.getRol());
+            ps.setString(7, usuario.getRol());
             resultado = ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -122,7 +127,7 @@ public class UsuarioDAO {
     // Método para actualizar un usuario existente, se le pasa el email que tenía y los datos del usuario nuevo
     public boolean modificarUsuario(Usuario usuario) {
         boolean resultado = false;
-        String sql = "UPDATE usuario SET nombre = ?, apellidos = ?, contrasena = ?, email = ?, direccion = ?, telefono = ?, puntos = 0, esBaja = FALSE, rol = ? WHERE email = ?";
+        String sql = "UPDATE usuario SET nombre = ?, apellidos = ?, contrasena = ?, email = ?, direccion = ?, telefono = ?, rol = ? WHERE email = ?";
         try {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setString(1, usuario.getNombre());
@@ -131,10 +136,8 @@ public class UsuarioDAO {
             ps.setString(4, usuario.getEmail());
             ps.setString(5, usuario.getDireccion());
             ps.setString(6, usuario.getTelefono());
-            ps.setInt(7, usuario.getPuntos());
-            ps.setBoolean(8, usuario.isEsBaja());
-            ps.setString(9, usuario.getRol());
-            ps.setString(10, usuario.getEmail());
+            ps.setString(7, usuario.getRol());
+            ps.setString(8, usuario.getEmail());
 
             resultado = ps.executeUpdate() > 0;
 
@@ -144,17 +147,4 @@ public class UsuarioDAO {
         return resultado;
     }
 
-    // Método para dar de baja a un usuario existente
-    public boolean darDeBaja(String email) {
-        boolean resultado = false;
-        String sql = "UPDATE usuario SET esBaja = 1 WHERE email = ?";
-        try {
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setString(1, email);
-            resultado = ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return resultado;
-    }
 }

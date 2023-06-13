@@ -44,6 +44,7 @@ public class VerFigura extends HttpServlet {
         Figura figura = fdao.getFiguraPorNombre(nombre);
         if (figura != null) {
             request.setAttribute("figura", figura);
+            fdao.cerrarConexion();
             getServletContext().getRequestDispatcher("/figura.jsp").forward(request, response);
         } else {
             getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);

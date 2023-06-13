@@ -97,7 +97,7 @@
                                         </a>
                                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                             <a class="dropdown-item" href="#">Ver mis favoritos</a>
-                                            <a class="dropdown-item" href="#">Ver mis pedidos</a>
+                                            <a class="dropdown-item" href="../pedidos">Ver mis pedidos</a>
                                             <a class="dropdown-item" href="#">Editar perfil</a>
                                             <a class="dropdown-item" href="../CerrarSesion">Cerrar sesión</a>
                                         </div>
@@ -161,14 +161,14 @@
                                 <div class="col-md-7">
                                     <div class="product p-2">
                                         <div class="mb-3 d-flex justify-content-between align-items-center">
-                                            <h5><strong><c:out value="${figura.nombre}"/></strong></h5>
+                                            <h5 class="w-100"><strong><c:out value="${figura.nombre}"/></strong></h5>
                                         </div>
                                         <p class="about"><c:out value="${figura.descripcion}"/></p>
                                         <div class="price-quantity">
                                             <div class="product-price-and-shipping d-flex flex-wrap justify-content-center align-items-center">
                                                 <h1 class="price product-price" style="font-size: 1.7rem"><c:out value="${figura.precioConDescuento}"/>€</h1>
                                                 <c:if test="${figura.porcentajeDescuento > 0}">  <h1 class="regular-price ms-5"style="font-size: 1.4rem"><c:out value="${figura.precio}"/>€</h1>
-                                          </c:if>  </div>
+                                                </c:if>  </div>
                                             <!-- Si no hay stock, que lo indique -->
                                             <c:if test="${figura.stock eq 0}">     
                                                 <span class="text-danger"><strong>No quedan unidades disponibles :(</strong></span>
@@ -213,7 +213,7 @@
                                                 </c:otherwise>
                                             </c:choose>
                                             <button type="button" id="btn-compartir" title="Compartir" onclick="compartirFigura(location.href)">
-                                                <i class="fa fa-share-alt"></i>
+                                                <i class="fa fa-clipboard"></i>
                                             </button>
 
                                         </div>
@@ -222,11 +222,9 @@
                                                 <div class="col-md-5 mb-2">
                                                     <span>Proveedor: <br><c:out value="${figura.proveedor.nombre}"/></span>
                                                 </div>
-                                                <div class="col-md-7 mb-2">
-                                                    <span>Material(es):</span>
-                                                    <c:forEach items="${figura.materiales}" var="material">
-                                                        <br><span><c:out value="${material.nombre}"/></span>
-                                                    </c:forEach>
+                                                <div class="col-md-5 mb-2">
+                                                    <span>Material: <br><c:out value="${figura.material.nombre}"/></span>
+
                                                 </div>
                                             </div>
                                         </div>

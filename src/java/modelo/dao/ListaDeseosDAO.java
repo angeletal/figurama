@@ -25,6 +25,14 @@ public class ListaDeseosDAO {
     public ListaDeseosDAO() {
         this.conexion = new Conexion().getConexion();
     }
+    
+    public void cerrarConexion() {
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
+        }
+    }
 
     public List<ArticuloListaDeseos> obtenerListaDeseos(int idUsu) {
         List<ArticuloListaDeseos> listaDeseos = new ArrayList();

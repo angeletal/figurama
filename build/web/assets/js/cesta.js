@@ -21,9 +21,9 @@ function anadirArticulo() {
 
 
                 if (respuesta.trim() === '-1') { //-1 es si no hay stock
-                    alert("No se ha podido añadir porque supera el stock máximo");
+                    alert("No se ha podido añadir a la cesta porque supera entre lo que ya tiene y lo que desea añadir supera el stock máximo");
                 } else if (respuesta.trim() === '-2') {
-                    alert("No se ha podido añadir porque supera el stock mínimo");
+                    alert("No se ha podido añadir porque el stock mínimo es de 1");
                 } else {
                     alert("Artículo añadido correctamente a la cesta");
                     document.getElementById("botonAccesoCesta").innerHTML = "Cesta (" + respuesta.trim() + ")";
@@ -35,7 +35,7 @@ function anadirArticulo() {
 }
 
 function eliminarArticulo(idFigura) {
-    var res = confirm("seguro?");
+    var res = confirm("¿Está seguro/a de que desea vaciar su cesa?");
     if (res) {
 
         var xhr = new XMLHttpRequest();
@@ -60,7 +60,7 @@ function eliminarArticulo(idFigura) {
                     iva.innerHTML = (parseFloat(precioTotal.innerHTML) * 0.21).toFixed(2);
                     precioFinal.innerHTML = (parseFloat(precioTotal.innerHTML) + (parseFloat(iva.innerHTML))).toFixed(2);
 
-                    document.getElementById("valorCesta").innerHTML = respuesta.trim();
+                    document.getElementById("botonAccesoCesta").innerHTML = "Cesta (" + respuesta.trim() + ")";
 
                     alert("Articulo eliminado con exito");
 
@@ -80,24 +80,47 @@ function eliminarArticulo(idFigura) {
 }
 
 function vaciarCesta() {
-    var res = confirm("seguro?");
+    var res = confirm("Está seguro/a de que desea vaciar su cesta?");
     if (res) {
+        alert("La cesta se ha vaciado correctamente");
+        vaciarCestaSin();
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', `ActualizarCesta?id=1&accion=vaciar`, true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
 
-                alert("La cesta se ha vaciado correctamente");
-                window.location.href = "cesta.jsp";
 
-            }
-        };
-        xhr.send();
     }
+}
 
+
+function vaciarCestaSin() {
+
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', `ActualizarCesta?id=1&accion=vaciar`, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+
+
+            window.location.href = "cesta.jsp";
+
+        }
+    };
+    xhr.send();
+}
+
+
+
+function ajustarStockFiguras(figuras) {
+    // Mostrar las figuras en el contenedor
+    for (var i = 0; i < figuras.length; i++) {
+        var figura = figuras[i];
+        actualizarStock(figura.id);
+        document.getElementById("cantidad" + figura.id).value = figura.stock;
+        document.getElementById("stock" + figura.id).innerHTML = figura.stock;
+    }
+    alert("Ha ocurrido un fallo en su compra, el stock de los productos será actualizado al máximo disponible");
 
 }
+
 
 //Función para validar que la cantidad no se pase del límite cargado previamente
 function validarCantidad() {
@@ -108,11 +131,12 @@ function validarCantidad() {
 
     if (valor > max) {
         cantidad.value = max; // Establece el valor máximo si se excede 
-        alert("nourrrr max");
+        alert("No puede exceder el límite máximo del artículo");
     }
     if (valor <= 0) {
         cantidad.value = 1; // Establece el valor mínimo si se excede
-        alert("nourrrr min");
+        alert("No puede exceder el límite mínimo del artículo");
+
     }
 }
 
@@ -120,19 +144,20 @@ function validarCantidad() {
 //Función para validar que la cantidad no se pase del límite cargado previamente
 function actualizarStock(idFigura) {
     var cantidad = document.getElementById("cantidad" + idFigura);
+    var stock = document.getElementById("stock" + idFigura);
 
     var valor = parseInt(cantidad.value);
     var max = parseInt(cantidad.max);
-
-    if (isNaN(valor) || valor <= 0) {
-        cantidad.value = 1; // Establece el valor máximo si se excede
-        alert("nourrrr min");
+    if (stock === 0) {
+        alert(1);
+    } else if (isNaN(valor) || valor < 1) {
+        cantidad.value = 1; // Establece el valor mínimo si se excede
+        alert("No puede exceder el límite mínomo del artículo");
     } else if (valor > max) {
         cantidad.value = max; // Establece el valor máximo si se excede
-        alert("nourrrr max");
+        alert("No puede exceder el límite máximo del artículo");
     } else {
         //Si el valor es válido, que actualice el stock en la BD y en sesión mediante AJAX
-        var stock = document.getElementById("stock" + idFigura);
 
         // Realizar la solicitud AJAX al servlet de búsqueda
         var xhr = new XMLHttpRequest();
@@ -142,20 +167,26 @@ function actualizarStock(idFigura) {
                 // Obtener la respuesta del servidor
                 var respuesta = xhr.responseText;
 
-
+                var divFigura = cantidad.parentNode;
+                var nombreFigura = divFigura.id;
                 if (respuesta.trim() === '0') {
-                    alert("Vaya... el stock de la figura X se ha terminado :( ");
+                    alert("Vaya... la figura " + nombreFigura + "  se ha quedado sin stock, por favor eliminela si desea proceder a su compra");
+                    cantidad.value = parseInt(respuesta.trim());
                     stock.innerHTML = respuesta.trim();
-                    //cosas activar clase para ponerle como que no hay stock y quitar precio
-                }
-                //Modificar valores en JSP si no ha devuelto menos stock del que ha solicitado comprar el usuario
-                else if (parseInt(respuesta.trim()) >= cantidad.value) {
+                    cantidad.min = 0;
+                    cantidad.value = 0;
 
                     actualizarPrecio(idFigura, parseInt(respuesta.trim()));
+                }
 
+                //Modificar valores si no ha devuelto menos stock del que ha solicitado comprar el usuario
+                else if (parseInt(respuesta.trim()) >= cantidad.value) {
+                    cantidad.max = parseInt(respuesta.trim());
+                    actualizarPrecio(idFigura, parseInt(respuesta.trim()));
                 } else {
-                    alert("Vaya... el stock máximo de la figura X ha cambiado, ahora es de " + respuesta.trim() + " unidades");
+                    alert("Vaya... el stock máximo de la figura " + nombreFigura + "  ha cambiado, ahora es de " + respuesta.trim() + " unidades");
                     cantidad.value = parseInt(respuesta.trim());
+                    stock.innerHTML = respuesta.trim();
 
                     actualizarPrecio(idFigura, parseInt(respuesta.trim()));
 
@@ -191,7 +222,9 @@ function actualizarPrecio(idFigura, cantidad2) {
     var totalArticuloFinal = (parseInt(cantActual.innerHTML) * parseFloat(precioUd.innerHTML)).toFixed(2);
 
     precioTotal.innerHTML = (parseFloat(precioTotal.innerHTML) - parseFloat(totalArticulo.innerHTML) + parseFloat(totalArticuloFinal)).toFixed(2);
-
+    if (parseFloat(precioTotal.innerHTML) < 0) {
+        precioTotal.innerHTML = 0;
+    }
     iva.innerHTML = (parseFloat(precioTotal.innerHTML) * 0.21).toFixed(2);
     precioFinal.innerHTML = (parseFloat(precioTotal.innerHTML) + (parseFloat(iva.innerHTML))).toFixed(2);
     totalArticulo.innerHTML = totalArticuloFinal;
@@ -217,18 +250,181 @@ function comprar() {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             // Obtener la respuesta del servidor
-            var respuesta = JSON.parse(xhr.responseText);
-            if (respuesta.length === 0) {
+            var figuras = JSON.parse(xhr.responseText);
+            if (figuras.length === 0) {
                 alert("Compra realizada satisfactoriamente");
-            } else {
-                alert("Ha ocurrido un fallo en su compra, el stock de los productos sera actualizado al maximo disponible");
-            }
+
+                vaciarCestaSin();
                 window.location.href = "cesta.jsp";
 
+            } else {
+                ajustarStockFiguras(figuras);
+
+            }
         }
     };
     xhr.send();
 }
 
+var hayError;
+function enviarFormulario(event) {
+
+    hayError = false;
+
+    var cantidades = document.getElementsByClassName("cantidadArticulo");
+    var articulos = "";
+    for (var i = 0; i < cantidades.length; i++) {
+        var cantidad = cantidades[i];
+
+        if (cantidad.value === '0') {
+            hayError = true;
+            console.log(hayError);
+            var padre = cantidad.parentNode;
+            articulos += padre.id + "\n";
+
+        }
+    }
+
+    if (hayError) {
+        alert("No puede comprar ningún artículo con 0 de stock, por favor revise los siguientes artículos y eliminelos:\n\n" + articulos);
+        event.preventDefault();
+    } else {
+        validarNumeroCuenta(event);
+        validarNombre(event);
+        validarFechaCaducidad(event);
+        validarCVV(event);
+
+        if (!hayError) {
+            event.preventDefault();
+            comprar();
+        }
+    }
+}
+
+// Agrega un event listener al evento "submit" del formulario
+var formularioTarjeta = document.getElementById("tarjeta");
+formularioTarjeta.addEventListener("submit", enviarFormulario);
 
 
+var togglePassword = document.getElementById("togglePassword");
+var cvv = document.getElementById("cvv");
+
+togglePassword.addEventListener('click', function () {
+    if (cvv.type === "password") {
+        cvv.type = "text";
+        togglePassword.classList.remove("fa-eye");
+        togglePassword.classList.add("fa-eye-slash");
+    } else {
+        cvv.type = "password";
+        togglePassword.classList.remove("fa-eye-slash");
+        togglePassword.classList.add("fa-eye");
+    }
+});
+
+
+
+function validarNombre(e) {
+    var nombre = document.getElementById("titular");
+    var errorNombre = document.getElementById("errorTitular");
+
+    if (nombre.value === null || nombre.value.trim().length === 0) {
+        errorNombre.innerHTML = "Este campo no puede estar vacío.";
+
+    } else if (nombre.value.trim().length > 30) {
+        errorNombre.innerHTML = "Este campo no puede tener una longitud superior a 30 caracteres.";
+    } else {
+        nombre.classList.remove("error");
+        errorNombre.innerHTML = "";
+        return true;
+    }
+    nombre.classList.add("error");
+    if (!hayError) {
+        nombre.focus();
+        hayError = true;
+    }
+    e.preventDefault();
+    return false;
+}
+
+
+function validarFechaCaducidad(e) {
+    var fechaCaducidad = document.getElementById("caducidad");
+    var errorFechaCaducidad = document.getElementById("errorCaducidad");
+
+    var currentDate = new Date();
+    var inputMonthYear = fechaCaducidad.value.split('/');
+    var inputMonth = parseInt(inputMonthYear[0], 10);
+    var inputYear = parseInt(inputMonthYear[1], 10) + 2000; // Agregar 2000 para obtener el año completo
+
+    var currentMonth = currentDate.getMonth() + 1; // Obtener el mes actual
+    var currentYear = currentDate.getFullYear(); // Obtener el año actual
+
+    // Verificar el formato "MM/YY" con una expresión regular
+    var formatoValido = /^(0[1-9]|1[0-2])\/\d{2}$/.test(fechaCaducidad.value);
+
+    if (fechaCaducidad.value === null || fechaCaducidad.value.trim().length === 0) {
+        errorFechaCaducidad.innerHTML = "Este campo no puede estar vacío.";
+    } else if (!formatoValido) {
+        errorFechaCaducidad.innerHTML = "El formato de fecha debe ser MM/YY (mes y año).";
+    } else if (inputYear < currentYear || (inputYear === currentYear && inputMonth < currentMonth)) {
+        errorFechaCaducidad.innerHTML = "La fecha de caducidad debe ser posterior a la fecha actual.";
+    } else {
+        fechaCaducidad.classList.remove("error");
+        errorFechaCaducidad.innerHTML = "";
+        return true;
+    }
+
+    fechaCaducidad.classList.add("error");
+    if (!hayError) {
+        fechaCaducidad.focus();
+        hayError = true;
+    }
+    e.preventDefault();
+    return false;
+}
+
+function validarCVV(e) {
+    var cvv = document.getElementById("cvv");
+    var errorCVV = document.getElementById("errorCvv");
+
+    if (cvv.value === null || cvv.value.trim().length === 0) {
+        errorCVV.innerHTML = "Este campo no puede estar vacío.";
+    } else if (!/^\d{3}$/.test(cvv.value.trim())) {
+        errorCVV.innerHTML = "El CVV debe contener exactamente 3 números.";
+    } else {
+        cvv.classList.remove("error");
+        errorCVV.innerHTML = "";
+        return true;
+    }
+
+    cvv.classList.add("error");
+    if (!hayError) {
+        cvv.focus();
+        hayError = true;
+    }
+    e.preventDefault();
+    return false;
+}
+
+function validarNumeroCuenta(e) {
+    var numeroCuenta = document.getElementById("cuenta");
+    var errorNumeroCuenta = document.getElementById("errorCuenta");
+
+    if (numeroCuenta.value === null || numeroCuenta.value.trim().length === 0) {
+        errorNumeroCuenta.innerHTML = "Este campo no puede estar vacío.";
+    } else if (!/^\d{16}$/.test(numeroCuenta.value.trim())) {
+        errorNumeroCuenta.innerHTML = "El número de cuenta debe contener exactamente 16 números.";
+    } else {
+        numeroCuenta.classList.remove("error");
+        errorNumeroCuenta.innerHTML = "";
+        return true;
+    }
+
+    numeroCuenta.classList.add("error");
+    if (!hayError) {
+        numeroCuenta.focus();
+        hayError = true;
+    }
+    e.preventDefault();
+    return false;
+}

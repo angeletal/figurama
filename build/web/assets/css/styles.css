@@ -16,6 +16,14 @@ body {
     min-height: 100vh;
 }
 
+.toggle-password-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
 
 .content {
     flex: 1;
@@ -409,6 +417,14 @@ a:hover{
     color: #fd6282
 
 }
+
+.flex-item.proveedores:hover{
+    transform: none;
+    box-shadow: none;
+            cursor: default !important;
+
+}
+
 
 
 .flex-item a {

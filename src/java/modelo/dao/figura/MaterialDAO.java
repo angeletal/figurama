@@ -24,6 +24,14 @@ public class MaterialDAO {
     public MaterialDAO() {
         this.conexion = new Conexion().getConexion();
     }
+    
+    public void cerrarConexion() {
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
+        }
+    }
 
     //Método para obtener los datos de un material en base a su id
     public Material getMaterialPorId(int id) {
@@ -79,5 +87,21 @@ public class MaterialDAO {
         }
         return materiales;
 
+    }
+      
+      //Método para obtener los datos de un personaje en base a su nombre
+    public Material getMaterialPorNombre(String nombre) {
+        Material material = null;
+        try {
+            PreparedStatement ps = conexion.prepareStatement("SELECT * FROM material WHERE LOWER(nombre) = ?");
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                material = new Material(rs.getInt("id"),rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return material;
     }
 }

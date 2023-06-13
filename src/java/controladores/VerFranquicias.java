@@ -33,6 +33,7 @@ public class VerFranquicias extends HttpServlet {
        
         SerieDAO sdao = new SerieDAO();
         List<Serie> series = sdao.getListaSeries();
+        sdao.cerrarConexion();
         request.setAttribute("series", series);
         
                 getServletContext().getRequestDispatcher("/franquicias.jsp").forward(request, response);

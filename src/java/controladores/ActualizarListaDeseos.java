@@ -48,13 +48,15 @@ public class ActualizarListaDeseos extends HttpServlet {
         //Eliminar el articulo de la sesion de listaDeseos y lo eliminar de la BD
         listaDeseos.remove(new ArticuloListaDeseos(fdao.getFiguraPorId(id)));
         lddao.eliminarListaDeseos(id, ((Usuario)sesion.getAttribute("usuario")).getId());
-        mensaje = "Eliminado";
+        mensaje = "Artículo eliminado de la lista de deseos";
     } else {
         listaDeseos.add(new ArticuloListaDeseos(new Figura(id)));
         //Añade el articulo a la sesion de listaDeseos y lo añade a la BD
         lddao.anadirListaDeseos(id, ((Usuario)sesion.getAttribute("usuario")).getId());
-        mensaje = "Añadido";
+        mensaje = "Artículo añadido a la lista de deseos";
     }
+    lddao.cerrarConexion();
+    fdao.cerrarConexion();
 
     // Envía una respuesta al cliente
     PrintWriter out = response.getWriter();

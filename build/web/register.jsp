@@ -73,10 +73,11 @@
                                 <!--Aquí se enviarán los datos a un servlet que compruebe que los datos son
                                 correctos , en caso de que no lo sea vuelve a esta página indicando algún mensaje de error-->
                                 <input class="btn btn-primary mt-2 p-2" type="submit" id="enviar" value="Registrarme" onclick=hayError = false />
-                                <a class="btn btn-primary mt-2 p-2" href="login.jsp">¿Ya tienes una cuenta? Acceder</a>
+                                <a class="btn btn-primary mt-2 p-2" href="login.jsp">¿Ya tienes cuenta? Acceder</a>
 
-                        </form>
                     </div>
+                                                    </form>
+
                 </div>
             </div>
 

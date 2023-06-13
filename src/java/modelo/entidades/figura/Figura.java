@@ -26,10 +26,12 @@ public class Figura {
     private int altura;
     private int idPersonaje;
     private int idProveedor;
+    private int idMaterial;
+    private int porcentajeDescuento;
     private List<ImagenFigura> imagenes;
     private String primeraImagen;
-    private int porcentajeDescuento;
     private double precioConDescuento;
+
     public Figura() {
     }
 
@@ -37,30 +39,45 @@ public class Figura {
         this.id = id;
     }
 
-    public Figura(int id, String nombre, String descripcion, Date fechaSalida, double precio, int stock, int altura, int idPersonaje, int idProveedor, int porcentajeDescuento) {
+    public Figura(int id, String nombre, String descripcion, Date fechaSalida, double precio, int stock, int altura, int idPersonaje, int idProveedor, int porcentajeDescuento, int idMaterial) {
         this.id = id;
         this.nombre = nombre;
-        this.descripcion = descripcion.replace("\n", System.getProperty("line.separator"));
-        //cosas revisar esto, descripcion
+        this.descripcion = descripcion;
         this.fechaSalida = fechaSalida;
         this.precio = precio;
         this.stock = stock;
         this.altura = altura;
         this.idPersonaje = idPersonaje;
         this.idProveedor = idProveedor;
+        this.idMaterial = idMaterial;
         this.porcentajeDescuento = porcentajeDescuento;
         ImagenFiguraDAO ifd = new ImagenFiguraDAO();
         imagenes = ifd.obtenerImagenes(id);
-        
-      this.primeraImagen = imagenes.get(0).getUrl();
 
-        
+        this.primeraImagen = imagenes.get(0).getUrl();
+
         double valorDescuento = 0;
         if (porcentajeDescuento != 0) {
             valorDescuento = precio * (porcentajeDescuento / 100.0);
         }
+
+        precioConDescuento = Math.floor((precio - valorDescuento) * 100) / 100.0;
+    }
+    
+     public Figura(String nombre, String descripcion, Date fechaSalida, double precio, int stock, int altura, int idPersonaje, int idProveedor, int porcentajeDescuento, int idMaterial) {
+        this.nombre = nombre;
+        this.descripcion=descripcion;
+        this.fechaSalida = fechaSalida;
+        this.precio = precio;
+        this.stock = stock;
+        this.altura = altura;
+        this.idPersonaje = idPersonaje;
+        this.idProveedor = idProveedor;
+        this.idMaterial = idMaterial;
+        this.porcentajeDescuento = porcentajeDescuento;
       
-        precioConDescuento= Math.floor((precio - valorDescuento) * 100) / 100.0;
+
+        
     }
 
     public boolean estaEnListaDeseos(List<ArticuloListaDeseos> listaDeseos) {
@@ -140,6 +157,14 @@ public class Figura {
         this.idProveedor = idProveedor;
     }
 
+    public int getIdMaterial() {
+        return idMaterial;
+    }
+
+    public void setIdMaterial(int idMaterial) {
+        this.idMaterial = idMaterial;
+    }
+
     public int getPorcentajeDescuento() {
         return porcentajeDescuento;
     }
@@ -166,42 +191,45 @@ public class Figura {
 
     public List<Material> getMateriales() {
         MaterialDAO mdao = new MaterialDAO();
-        return mdao.getListaMateriales(id);
+        List<Material> materiales=mdao.getListaMateriales(id);
+        mdao.cerrarConexion();
+        return materiales;
 
     }
 
-    /* public void setMateriales(List<Material> materiales){
-       MaterialDAO mdao = new MaterialDAO();
-     // mdao.setListaMateriales(materiales);
-   }*/
     public Proveedor getProveedor() {
         ProveedorDAO pdao = new ProveedorDAO();
-        return pdao.getProveedorPorId(idProveedor);
+        Proveedor proveedor = pdao.getProveedorPorId(idProveedor);
+        pdao.cerrarConexion();
+        return proveedor;
     }
 
-    /*     
-   public void setMateriales(Proveedor proveedor){
-     ProveedorDAO pdao = new ProveedorDAO();     
-       pdao.setProveedor(proveedor);
-       
-   }*/
+    public Material getMaterial() {
+        MaterialDAO mdao = new MaterialDAO();
+        Material material = mdao.getMaterialPorId(idMaterial);
+        mdao.cerrarConexion();
+        return material;
+    }
+
     public Personaje getPersonaje() {
         PersonajeDAO pjdao = new PersonajeDAO();
-        return pjdao.getPersonajePorId(idPersonaje);
+        Personaje p = pjdao.getPersonajePorId(idPersonaje);
+        pjdao.cerrarConexion();
+        return p;
     }
 
     public Serie getSerie() {
         SerieDAO sdao = new SerieDAO();
-        return sdao.getSeriePorId(getPersonaje().getIdSerie());
+        Serie s = sdao.getSeriePorId(getPersonaje().getIdSerie());
+        sdao.cerrarConexion();
+        return s;
     }
 
     public double getPrecioConDescuento() {
         return precioConDescuento;
     }
 
-
-
- public double getIva() {
+    public double getIva() {
         return Math.floor(precioConDescuento * 0.21 * 100) / 100;
     }
 

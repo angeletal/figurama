@@ -39,23 +39,26 @@ public class Comprar extends HttpServlet {
 
         Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
         CestaDAO cdao = new CestaDAO();
-        List<Figura> figuras = cdao.comprar((Cesta) request.getSession().getAttribute("cesta"), usuario);
-        if (figuras.isEmpty()) {
-            request.getSession().removeAttribute("cesta");
-
-            if (usuario != null) {
-                cdao.vaciarCesta(usuario.getId());
-            }
-
+        Cesta cesta = (Cesta) request.getSession().getAttribute("cesta");
+        int idUsuario;
+        if (usuario == null) {
+            idUsuario = 1;
         } else {
+            idUsuario = usuario.getId();
+        }
+
+        List<Figura> figuras = cdao.comprar(cesta, idUsuario, "direccionPlaceholder");
+        //Si la lista está vacía es que se ha podido realizar la compra, así que se borra la cesta tanto de sesión como de la BD
+        if (!figuras.isEmpty()) {
 
             //Modificar cesta en sesion con el array de id, cantidad
-            Cesta cesta = (Cesta) request.getSession().getAttribute("cesta");
+
             for (int i = 0; i < cesta.getTamano(); i++) {
 
                 for (Figura figura : figuras) {
+                
                     //Modificar el stock de las figuras que esten en la lista de errores
-                    if (cesta.getArticulo(i).getFigura().getId() == figura.getId()) {
+                    if (cesta.getArticulo(i).getFigura().equals(figura)) {
                         cesta.getArticulo(i).getFigura().setStock(figura.getStock());
 
                         cesta.getArticulo(i).setCantidad(figura.getStock());
@@ -68,7 +71,7 @@ public class Comprar extends HttpServlet {
                 cdao.guardarCesta(cesta.getArticulos(), usuario.getId());
             }
         }
-
+        cdao.cerrarConexion();
         // Convierte la lista de figuras a formato JSON
         Gson gson = new Gson();
         String figurasJson = gson.toJson(figuras);

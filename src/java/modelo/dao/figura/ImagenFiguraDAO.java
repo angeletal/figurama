@@ -24,21 +24,16 @@ public class ImagenFiguraDAO {
     public ImagenFiguraDAO() {
         this.conexion = new Conexion().getConexion();
     }
-
-    public boolean guardarImagen(ImagenFigura imagen) {
-        boolean resultado = false;
-
-        String sql = "INSERT INTO articulosCesta (url, idFigura) VALUES (?, ?)";
+    
+    public void cerrarConexion() {
         try {
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setString(1, imagen.getUrl());
-            ps.setInt(2, imagen.getIdFigura());
-            resultado = ps.executeUpdate() > 0;
+            conexion.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
         }
-        return resultado;
     }
+
+    
 
     public List<ImagenFigura> obtenerImagenes(int idFigura) {
         List<ImagenFigura> imagenes = new ArrayList();

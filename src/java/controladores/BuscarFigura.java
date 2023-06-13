@@ -46,6 +46,7 @@ public class BuscarFigura extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
+        fdao.cerrarConexion();
         // Envía la respuesta JSON al cliente
         PrintWriter out = response.getWriter();
         out.print(figurasJson);

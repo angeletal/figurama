@@ -24,6 +24,14 @@ public class ProveedorDAO {
     public ProveedorDAO() {
         this.conexion = new Conexion().getConexion();
     }
+    
+    public void cerrarConexion() {
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
+        }
+    }
 
     //Método para obtener los datos de un proveedor en base a su id
     public Proveedor getProveedorPorId(int id) {
@@ -56,5 +64,21 @@ public class ProveedorDAO {
             e.printStackTrace();
         }
         return proveedores;
+    }
+    
+    //Método para obtener los datos de un personaje en base a su nombre
+    public Proveedor getProveedorPorNombre(String nombre) {
+        Proveedor proveedor = null;
+        try {
+            PreparedStatement ps = conexion.prepareStatement("SELECT * FROM proveedor WHERE LOWER(nombre) = ?");
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                proveedor = new Proveedor(rs.getInt("id"),rs.getString("nombre"), rs.getString("imagenURL"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return proveedor;
     }
 }

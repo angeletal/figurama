@@ -55,11 +55,10 @@ public class FiltroCatalogo extends HttpServlet {
         FiguraDAO fdao = new FiguraDAO();
         List<Figura> figuras;
 
-        
-        
         // Obtener las figuras correspondientes 
         figuras = fdao.getFigurasCatalogo(checkSer, checkProv, filtro, precioMinimo, precioMaximo, orden);
 
+        fdao.cerrarConexion();
         // Convertir la lista de figuras a formato JSON
         Gson gson = new Gson();
         figurasJson = gson.toJson(figuras);

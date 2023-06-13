@@ -16,6 +16,7 @@
     request.setAttribute("precioMinimo", fdao.getPrecioMinimo(filtro));
     request.setAttribute("precioMaximo", fdao.getPrecioMaximo(filtro));
     request.setAttribute("filtro", filtro);
+    fdao.cerrarConexion();
 %>
 
 <!DOCTYPE html>
@@ -93,7 +94,7 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="#">Ver mis favoritos</a>
-                                        <a class="dropdown-item" href="#">Ver mis pedidos</a>
+                                        <a class="dropdown-item" href="../pedidos">Ver mis pedidos</a>
                                         <a class="dropdown-item" href="#">Editar perfil</a>
                                         <a class="dropdown-item" href="CerrarSesion">Cerrar sesión</a>
                                     </div>
@@ -240,11 +241,11 @@
                                         <div class="sort-select dropdown js-dropdown">
 
                                             <select class="custom-select ml-sm-2 ms-2" id="select-paginacion">
-                                                <option value=4" selected="selected">1</option>
-                                                <option value="25">25</option>
-                                                <option value="50">50</option>
-                                                <option value="75">75</option>
-                                                <option value="100">100</option>
+                                                  <option value=1" selected="selected">1</option>
+                                                    <option value="5">5</option>
+                                                    <option value="15">15</option>
+                                                    <option value="30">30</option>
+                                                    <option value="50">50</option>
                                             </select>
                                         </div>
                                     </div>

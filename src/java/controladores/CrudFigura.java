@@ -1,0 +1,351 @@
+package controladores;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import modelo.dao.PersonajeDAO;
+import modelo.dao.figura.FiguraDAO;
+import modelo.dao.figura.MaterialDAO;
+import modelo.dao.figura.ProveedorDAO;
+import modelo.entidades.figura.Figura;
+
+/**
+ *
+ * @author Angel
+ */
+@WebServlet(name = "CrudFigura", urlPatterns = {"/CrudFigura"})
+@MultipartConfig
+public class CrudFigura extends HttpServlet {
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+
+        String mensaje = "";
+        String accion = request.getParameter("accion");
+        if (accion == null) {
+            response.sendRedirect("index.jsp");
+            return;
+        } else {
+
+            Figura figura;
+            FiguraDAO fdao = new FiguraDAO();
+
+            if (accion.equals("eliminar")) {
+                int idFigura = Integer.parseInt(request.getParameter("id"));
+                fdao.eliminarFigura(idFigura);
+                mensaje = "Figura eliminada correctamente";
+            } else {
+
+                MaterialDAO mdao = new MaterialDAO();
+                PersonajeDAO pjdao = new PersonajeDAO();
+                ProveedorDAO pdao = new ProveedorDAO();
+
+                Part nombrePart = request.getPart("figuraNombre");
+                String nombre = "";
+                if (nombrePart != null) {
+                    try ( InputStream inputStream = nombrePart.getInputStream()) {
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            result.write(buffer, 0, length);
+                        }
+                        nombre = result.toString(StandardCharsets.UTF_8.name());
+                    }
+                }
+
+                Part personajePart = request.getPart("figuraPersonaje");
+                String nombrePersonaje = "";
+                if (personajePart != null) {
+                    try ( InputStream inputStream = personajePart.getInputStream()) {
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            result.write(buffer, 0, length);
+                        }
+                        nombrePersonaje = result.toString(StandardCharsets.UTF_8.name());
+                    }
+                }
+
+                Part descripcionPart = request.getPart("figuraDescripcion");
+                String descripcion = "";
+                if (descripcionPart != null) {
+                    try ( InputStream inputStream = descripcionPart.getInputStream()) {
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            result.write(buffer, 0, length);
+                        }
+                        descripcion = result.toString(StandardCharsets.UTF_8.name());
+                    }
+                }
+
+                Part precioPart = request.getPart("figuraPrecio");
+                Double precio = 0.0;
+                if (precioPart != null) {
+                    try ( InputStream inputStream = precioPart.getInputStream()) {
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            result.write(buffer, 0, length);
+                        }
+                        precio = Double.valueOf(result.toString(StandardCharsets.UTF_8.name()));
+                    }
+                }
+
+                Part alturaPart = request.getPart("figuraAltura");
+                int altura = 0;
+                if (alturaPart != null) {
+                    try ( InputStream inputStream = alturaPart.getInputStream()) {
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            result.write(buffer, 0, length);
+                        }
+                        altura = Integer.parseInt(result.toString(StandardCharsets.UTF_8.name()));
+                    }
+                }
+
+                Part stockPart = request.getPart("figuraStock");
+                int stock = 0;
+                if (stockPart != null) {
+                    try ( InputStream inputStream = stockPart.getInputStream()) {
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            result.write(buffer, 0, length);
+                        }
+                        stock = Integer.parseInt(result.toString(StandardCharsets.UTF_8.name()));
+                    }
+                }
+
+                Part descuentoPart = request.getPart("figuraDescuento");
+                int descuento = 0;
+                if (descuentoPart != null) {
+                    try ( InputStream inputStream = descuentoPart.getInputStream()) {
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            result.write(buffer, 0, length);
+                        }
+                        descuento = Integer.parseInt(result.toString(StandardCharsets.UTF_8.name()));
+                    }
+                }
+
+                Part proveedorPart = request.getPart("figuraProveedor");
+                String nombreProveedor = "";
+                if (proveedorPart != null) {
+                    try ( InputStream inputStream = proveedorPart.getInputStream()) {
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            result.write(buffer, 0, length);
+                        }
+                        nombreProveedor = result.toString(StandardCharsets.UTF_8.name());
+                    }
+                }
+
+                Part materialPart = request.getPart("figuraMaterial");
+                String nombreMaterial = "";
+                if (materialPart != null) {
+                    try ( InputStream inputStream = materialPart.getInputStream()) {
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            result.write(buffer, 0, length);
+                        }
+                        nombreMaterial = result.toString(StandardCharsets.UTF_8.name());
+                    }
+                }
+
+                Part fechaPart = request.getPart("figuraFecha");
+                Date fecha = null;
+                if (fechaPart != null) {
+                    try ( InputStream inputStream = fechaPart.getInputStream()) {
+                        ByteArrayOutputStream result = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int length;
+                        while ((length = inputStream.read(buffer)) != -1) {
+                            result.write(buffer, 0, length);
+                        }
+                        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        fecha = inputFormat.parse(result.toString(StandardCharsets.UTF_8.name()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                String path = request.getServletContext().getRealPath("");
+
+                String ubicacion = getServletContext().getRealPath("/assets/images/figuras/");
+
+                Part imagen1Part = request.getPart("figuraImagen1");
+                String nombreImagen1 = nombre + "_1.jpg";
+                String rutaDestino = ubicacion + File.separator + (nombreImagen1);
+                
+                 Path rutaArchivo = Paths.get(rutaDestino);
+
+                // Verificar si el archivo existe y eliminarlo si es necesario
+                if (Files.exists(rutaArchivo)) {
+                    Files.delete(rutaArchivo);
+                }
+                
+                
+                Files.copy(imagen1Part.getInputStream(), Paths.get(ubicacion, nombreImagen1));
+
+                
+                
+   Part imagen2Part = request.getPart("figuraImagen2");
+                String nombreImagen2 = nombre + "_2.jpg";
+                String rutaDestino2 = ubicacion + File.separator + (nombreImagen2);
+                
+                 Path rutaArchivo2 = Paths.get(rutaDestino2);
+
+                // Verificar si el archivo existe y eliminarlo si es necesario
+                if (Files.exists(rutaArchivo2)) {
+                    Files.delete(rutaArchivo2);
+                }
+                
+                
+                Files.copy(imagen2Part.getInputStream(), Paths.get(ubicacion, nombreImagen2));
+
+
+                
+                
+                
+                
+                
+                
+                
+                
+           
+                Part imagen3Part = request.getPart("figuraImagen3");
+                String nombreImagen3 = nombre + "_3.jpg";
+                if (imagen3Part != null && imagen3Part.getSize() > 0) {
+
+                    File carpeta = new File(path + File.separator + "assets" + File.separator + "images" + File.separator + "figuras");
+
+                    if (!carpeta.exists()) {
+                        carpeta.mkdirs();
+                    }
+
+                    File imagen = new File(carpeta, nombreImagen3);
+
+                    try ( InputStream input = imagen3Part.getInputStream()) {
+                        Files.copy(input, imagen.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+
+                if (accion.equals("modificar")) {
+
+                    Part idPart = request.getPart("figuraId");
+                    int id = -1;
+                    if (idPart != null) {
+                        try ( InputStream inputStream = idPart.getInputStream()) {
+                            ByteArrayOutputStream result = new ByteArrayOutputStream();
+                            byte[] buffer = new byte[1024];
+                            int length;
+                            while ((length = inputStream.read(buffer)) != -1) {
+                                result.write(buffer, 0, length);
+                            }
+                            id = Integer.parseInt(result.toString(StandardCharsets.UTF_8.name()));
+                        }
+                    }
+
+                    figura = new Figura(id, nombre, descripcion, fecha, precio, stock, altura, pjdao.getPersonajePorNombre(nombrePersonaje.toLowerCase()).getId(), pdao.getProveedorPorNombre(nombreProveedor.toLowerCase()).getId(), descuento, mdao.getMaterialPorNombre(nombreMaterial.toLowerCase()).getId());
+                    fdao.modificarFigura(figura);
+                    mensaje = "Figura modificada correctamente";
+
+                } else if (accion.equals("anadir")) {
+                    figura = new Figura(nombre, descripcion, fecha, precio, stock, altura, pjdao.getPersonajePorNombre(nombrePersonaje.toLowerCase()).getId(), pdao.getProveedorPorNombre(nombreProveedor.toLowerCase()).getId(), descuento, mdao.getMaterialPorNombre(nombreMaterial.toLowerCase()).getId());
+                    fdao.anadirFigura(figura);
+                    mensaje = "Figura añadida correctamente";
+
+                }
+                mdao.cerrarConexion();
+                pdao.cerrarConexion();
+                pjdao.cerrarConexion();
+            }
+            fdao.cerrarConexion();
+
+        }
+
+        request.getSession().setAttribute("mensaje", mensaje);
+        request.getSession().setAttribute("tablaMostrada", "Figura");
+        response.sendRedirect("admin");
+    }
+
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
+}

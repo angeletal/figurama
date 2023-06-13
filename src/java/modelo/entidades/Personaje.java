@@ -1,8 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package modelo.entidades;
+
+import modelo.dao.PersonajeDAO;
 
 /**
  *
@@ -60,7 +59,12 @@ public class Personaje {
         this.url = url;
     }
    
-
+    public String getNombreSerie(){
+        PersonajeDAO pjdao = new PersonajeDAO();
+        String serie = pjdao.getSerie(nombre);
+        pjdao.cerrarConexion();
+        return serie;
+    }
     
 }
 

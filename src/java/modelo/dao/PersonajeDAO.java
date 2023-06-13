@@ -24,8 +24,16 @@ public class PersonajeDAO {
     public PersonajeDAO() {
         this.conexion = new Conexion().getConexion();
     }
+    
+    public void cerrarConexion() {
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
+        }
+    }
 
-    //Método para obtener los datos de un proveedor en base a su id
+    //Método para obtener los datos de un personaje en base a su id
     public Personaje getPersonajePorId(int id) {
         Personaje personaje = null;
         try {
@@ -41,15 +49,15 @@ public class PersonajeDAO {
         return personaje;
     }
 
-    //Método para obtener los datos de un proveedor en base a su nombre
+    //Método para obtener los datos de un personaje en base a su nombre
     public Personaje getPersonajePorNombre(String nombre) {
         Personaje personaje = null;
         try {
             PreparedStatement ps = conexion.prepareStatement("SELECT * FROM personaje WHERE LOWER(nombre) = ?");
             ps.setString(1, nombre);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                personaje = new Personaje(rs.getString("nombre"), rs.getInt("idSerie"), rs.getString("imagenURL"));
+            while (rs.next()) {
+                personaje = new Personaje(rs.getInt("id"),rs.getString("nombre"), rs.getInt("idSerie"), rs.getString("imagenURL"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,7 +65,7 @@ public class PersonajeDAO {
         return personaje;
     }
 
-    //Método para obtener los datos de un proveedor en base a su nombre
+    //Método para obtener los personajes de una serie en base a su nombre
     public List<Personaje> getPersonajesPorSerie(String nombreSerie) {
         List<Personaje> personajes = new ArrayList();
         try {
@@ -72,5 +80,40 @@ public class PersonajeDAO {
         }
         return personajes;
     }
+    
+    
+     //Método para obtener la seria a la que pertenece un personaje
+    public String getSerie(String nombrePersonaje) {
+        String nombre="";
+        try {
+            PreparedStatement ps = conexion.prepareStatement("SELECT s.nombre FROM serie s JOIN personaje p ON p.idSerie = s.id WHERE p.nombre = ?");
+            ps.setString(1, nombrePersonaje.toLowerCase());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                nombre=rs.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nombre;
+    }
+    
+     public List<Personaje> getListaPersonajes() {
+        List<Personaje> personajes = new ArrayList();
+        Personaje personaje;
+        try {
+            PreparedStatement ps = conexion.prepareStatement("SELECT * FROM personaje");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                personaje = new Personaje(rs.getInt("id"), rs.getString("nombre"),rs.getInt("idSerie") , rs.getString("imagenUrl"));
+                personajes.add(personaje);
+                }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return personajes;
+
+    }
+
 
 }

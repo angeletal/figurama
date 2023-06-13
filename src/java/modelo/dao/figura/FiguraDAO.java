@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.entidades.Conexion;
@@ -19,6 +20,15 @@ public class FiguraDAO {
 
     public FiguraDAO() {
         this.conexion = new Conexion().getConexion();
+
+    }
+
+    public void cerrarConexion() {
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
+        }
     }
 
     public Figura getFiguraPorId(int id) {
@@ -28,7 +38,7 @@ public class FiguraDAO {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                figura = new Figura(id, rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(id, rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,7 +54,7 @@ public class FiguraDAO {
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                figura = new Figura(rs.getInt("id"), nombre, rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), nombre, rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,7 +70,7 @@ public class FiguraDAO {
             PreparedStatement ps = conexion.prepareStatement("SELECT * FROM figura");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
                 figuras.add(figura);
             }
         } catch (SQLException e) {
@@ -77,7 +87,7 @@ public class FiguraDAO {
         try {
             PreparedStatement ps;
             if (tipo.equals("filtroTexto")) {
-                ps = conexion.prepareStatement("SELECT * FROM Figura f WHERE LOWER(nombre) LIKE ?");
+                ps = conexion.prepareStatement("SELECT * FROM Figura WHERE LOWER(nombre) LIKE ?");
                 ps.setString(1, "%" + filtro.toLowerCase() + "%");
             } else {
                 ps = conexion.prepareStatement("SELECT * FROM Figura f "
@@ -89,7 +99,7 @@ public class FiguraDAO {
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
                 figuras.add(figura);
             }
         } catch (SQLException e) {
@@ -107,7 +117,7 @@ public class FiguraDAO {
                     + "(SELECT max(precio-precio*descuento/100) from figura)");
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -125,7 +135,7 @@ public class FiguraDAO {
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -146,7 +156,7 @@ public class FiguraDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -166,7 +176,7 @@ public class FiguraDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -289,7 +299,7 @@ public class FiguraDAO {
             }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
 
                 figuras.add(figura);
             }
@@ -310,7 +320,7 @@ public class FiguraDAO {
                     + "GROUP BY f.id ORDER BY totalVentas DESC, f.nombre ASC LIMIT 5");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
                 figuras.add(figura);
             }
         } catch (SQLException e) {
@@ -326,7 +336,7 @@ public class FiguraDAO {
             PreparedStatement ps = conexion.prepareStatement("SELECT * FROM Figura ORDER BY fechaSalida DESC, nombre ASC LIMIT 5");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
                 figuras.add(figura);
             }
         } catch (SQLException e) {
@@ -334,16 +344,15 @@ public class FiguraDAO {
         }
         return figuras;
     }
-    
 
     public List<Figura> getListaFigurasEnOferta() {
         List<Figura> figuras = new ArrayList();
         Figura figura;
         try {
-            PreparedStatement ps = conexion.prepareStatement("SELECT * FROM Figura ORDER BY descuento DESC, nombre ASC LIMIT 5");
+            PreparedStatement ps = conexion.prepareStatement("SELECT * FROM Figura where descuento not like 0");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"));
+                figura = new Figura(rs.getInt("id"), rs.getString("nombre"), rs.getString("descripcion"), rs.getDate("fechaSalida"), rs.getDouble("precio"), rs.getInt("stock"), rs.getInt("altura"), rs.getInt("idPersonaje"), rs.getInt("idProveedor"), rs.getInt("descuento"), rs.getInt("idMaterial"));
                 figuras.add(figura);
             }
         } catch (SQLException e) {
@@ -351,4 +360,96 @@ public class FiguraDAO {
         }
         return figuras;
     }
+
+    public boolean modificarFigura(Figura figura) {
+        boolean resultado = false;
+        String sql = "UPDATE figura SET nombre = ?, descripcion = ?, fechaSalida = ?, precio = ?, stock = ?, altura = ?, descuento = ?, idPersonaje = ?, idProveedor = ?, idMaterial = ? WHERE id = ?";
+        try {
+
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.setString(1, figura.getNombre());
+            ps.setString(2, figura.getDescripcion());
+            ps.setDate(3, new java.sql.Date(figura.getFechaSalida().getTime()));
+            ps.setDouble(4, figura.getPrecio());
+            ps.setInt(5, figura.getStock());
+            ps.setInt(6, figura.getAltura());
+            ps.setInt(7, figura.getPorcentajeDescuento());
+            ps.setInt(8, figura.getIdPersonaje());
+            ps.setInt(9, figura.getIdProveedor());
+            ps.setInt(10, figura.getIdMaterial());
+            ps.setInt(11, figura.getId());
+
+            resultado = ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultado;
+    }
+
+    public void anadirFigura(Figura figura) {
+        String sql = "INSERT INTO figura (nombre,descripcion, fechaSalida,precio,stock,altura,descuento,idPersonaje,idProveedor,idMaterial) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        String sql2 = "INSERT INTO imagen (url,idFigura) VALUES (?,?)";
+
+        try {
+
+            PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, figura.getNombre());
+            ps.setString(2, figura.getDescripcion());
+            ps.setDate(3, new java.sql.Date(figura.getFechaSalida().getTime()));
+            ps.setDouble(4, figura.getPrecio());
+            ps.setInt(5, figura.getStock());
+            ps.setInt(6, figura.getAltura());
+            ps.setInt(7, figura.getPorcentajeDescuento());
+            ps.setInt(8, figura.getIdPersonaje());
+            ps.setInt(9, figura.getIdProveedor());
+            ps.setInt(10, figura.getIdMaterial());
+
+            ps.executeUpdate();
+
+            int idFigura = 0;
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                idFigura = rs.getInt(1);
+            }
+            for (int i = 1; i <= 3; i++) {
+                PreparedStatement ps2 = conexion.prepareStatement(sql2);
+                ps2.setString(1, figura.getNombre() + "_" + i + ".jpg");
+                ps2.setInt(2, idFigura);
+                ps2.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void eliminarFigura(int idFigura) {
+        boolean resultado = false;
+        String sql = "DELETE FROM cesta where idFigura=?";
+        String sql2 = "DELETE FROM imagen where idFigura=?";
+        String sql3 = "DELETE FROM figura where id=?";
+
+        try {
+            PreparedStatement ps = conexion.prepareStatement(sql);
+            ps.setInt(1, idFigura);
+
+            ps.executeUpdate();
+
+            PreparedStatement ps2 = conexion.prepareStatement(sql2);
+            ps2.setInt(1, idFigura);
+
+            ps2.executeUpdate();
+
+            PreparedStatement ps3 = conexion.prepareStatement(sql3);
+            ps3.setInt(1, idFigura);
+
+            ps3.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

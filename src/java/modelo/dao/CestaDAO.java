@@ -1,17 +1,12 @@
 package modelo.dao;
 
 import modelo.dao.figura.FiguraDAO;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpSession;
 import modelo.entidades.ArticuloCesta;
 import modelo.entidades.Cesta;
 import modelo.entidades.Conexion;
-import modelo.entidades.Usuario;
 import modelo.entidades.figura.Figura;
 
 /**
@@ -24,6 +19,14 @@ public class CestaDAO {
 
     public CestaDAO() {
         this.conexion = new Conexion().getConexion();
+    }
+
+    public void cerrarConexion() {
+        try {
+            conexion.close();
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
+        }
     }
 
     public List<ArticuloCesta> obtenerCesta(int idUsu) {
@@ -46,8 +49,8 @@ public class CestaDAO {
         }
         return listaDeseos;
     }
-
     // Método para añadir una figura a la cesta de un usuario
+
     public boolean anadirArticuloCesta(ArticuloCesta articulo, int idUsuario) {
         boolean resultado = false;
         String sql = "INSERT INTO cesta (idFigura, idUsuario, cantidad) VALUES (?, ?, ?)";
@@ -158,68 +161,78 @@ public class CestaDAO {
         }
     }
 
-    public List<Figura> comprar(Cesta cesta, Usuario usuario) {
+    public List<Figura> comprar(Cesta cesta, int idUsuario, String direccion) {
         List<Figura> figuras = new ArrayList();
-        boolean ventaExitosa = true;
+        boolean ventaExitosa;
 
         try {
-            conexion.setAutoCommit(false); // Iniciar la transacción
-            FiguraDAO fdao = new FiguraDAO();
+            //Intento de venta con trasaccion
+            ventaExitosa = venderProductos(idUsuario, cesta, direccion);
 
-            // Verificar si hay suficiente stock para todos los productos en la cesta
-            for (ArticuloCesta articulo : cesta.getArticulos()) {
-                int cantidadCesta = articulo.getCantidad();
-                int stock = fdao.getFiguraPorId(articulo.getFigura().getId()).getStock();
-                if (cantidadCesta > stock) {
-                    // No hay suficiente stock para realizar la venta
-                    Figura figura = new Figura();
-                    figura.setId(articulo.getFigura().getId());
-                    figura.setStock(stock);
-                    figura.setNombre(articulo.getFigura().getNombre());
-                    figuras.add(figura);
-                    ventaExitosa = false;
+            //Si da error, actualizar la cesta
+            if (!ventaExitosa) {
+                FiguraDAO fdao = new FiguraDAO();
+                //  Generar una cesta nueva con el stock actualizado
+                for (ArticuloCesta articulo : cesta.getArticulos()) {
+                    int cantidadCesta = articulo.getCantidad();
+                    int stock = fdao.getFiguraPorId(articulo.getFigura().getId()).getStock();
+                    if (cantidadCesta > stock) {
+                        // No hay suficiente stock para realizar la venta
+                        Figura figura = new Figura();
+                        figura.setId(articulo.getFigura().getId());
+                        figura.setStock(stock);
+                        figura.setNombre(articulo.getFigura().getNombre());
+                        figuras.add(figura);
+                    }
                 }
-            }
 
-            if (ventaExitosa) {
-
-                if (usuario != null) {
-                    venderProductos(usuario.getId(), cesta);
-                } else {
-                    venderProductos(0, cesta);
-                }
-            }
-
-            if (ventaExitosa) {
-                conexion.commit(); // Confirmar la transacción
-            } else {
-                conexion.rollback(); // Deshacer la transacción
             }
         } catch (SQLException e) {
-            // Manejar la excepción según corresponda
             e.printStackTrace();
         }
 
+        //Si ha fallado algo se devuelve la cesta actualizada, sino se devuelve
+        //una cesta vacía que representa que todo estuvo bien
         return figuras;
     }
 
-    private void venderProductos(int idUsuario, Cesta cesta) throws SQLException {
-        List<ArticuloCesta> articulos = cesta.getArticulos(); // Obtener todos los artículos de la cesta
+    private boolean venderProductos(int idUsuario, Cesta cesta, String direccion) throws SQLException {
+        List<ArticuloCesta> articulos = cesta.getArticulos();
         FiguraDAO fdao = new FiguraDAO();
 
-        // Si hay suficiente stock, proceder a realizar la venta
-        PreparedStatement psFigura = null;
-        PreparedStatement psVenta = null;
-
         try {
-            // Desactivar el autocommit para realizar una transacción
-            conexion.setAutoCommit(false);
+            conexion.setAutoCommit(false); // Desactivar el autocommit para realizar una transacción
 
-            // Actualizar el stock de cada producto en la base de datos
+            String sql = "INSERT INTO pedido (fecha, estado, idUsuario, direccion) VALUES (now(), ?, ?, ?)";
+
+            PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, "Pendiente de envio");
+            ps.setInt(2, idUsuario);
+            ps.setString(3, direccion);
+
+            // Ejecutar la inserción
+            ps.executeUpdate();
+
+            int idPedido = 0;
+            // Obtener las claves generadas (IDs)
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                idPedido = rs.getInt(1);
+            }
+
+            PreparedStatement psFigura;
+            PreparedStatement psVenta;
+            // Verificar si hay suficiente stock para cada artículo
             for (ArticuloCesta articulo : articulos) {
                 int cantidadCesta = articulo.getCantidad();
                 int stock = fdao.getFiguraPorId(articulo.getFigura().getId()).getStock();
                 int nuevoStock = stock - cantidadCesta;
+
+                //Si el stock no deseado en la compra de algún producto no es válido, que lance una excepcion
+                if (nuevoStock < 0) {
+                    throw new SQLException();
+                }
 
                 // Actualizar el stock de la figura en la base de datos
                 String updateStock = "UPDATE Figura SET stock = ? WHERE id = ?";
@@ -229,35 +242,22 @@ public class CestaDAO {
                 psFigura.executeUpdate();
 
                 // Insertar la venta en la base de datos
-                String insertVenta = "INSERT INTO Venta (fecha, cantidad, precioUd,idUsuario,  idFigura) VALUES (NOW(), ? , ?, ?, ?)";
+                String insertVenta = "INSERT INTO Venta (cantidad, precioUd, idPedido, idFigura) VALUES (? , ?, ?, ?)";
                 psVenta = conexion.prepareStatement(insertVenta);
                 psVenta.setInt(1, articulo.getCantidad());
                 psVenta.setDouble(2, articulo.getFigura().getPrecioConIva());
-                psVenta.setInt(3, idUsuario);
+                psVenta.setInt(3, idPedido);
                 psVenta.setInt(4, articulo.getFigura().getId());
-
                 psVenta.executeUpdate();
             }
-            // Confirmar la transacción
-            conexion.commit();
 
+            conexion.commit(); // Confirmar la transacción
+            return true;
         } catch (SQLException e) {
-            // Ocurrió un error, realizar rollback de la transacción
-            if (conexion != null) {
-                conexion.rollback();
-            }
-
-            e.printStackTrace();
-        } finally {
-            // Cerrar los recursos
-            if (psFigura != null) {
-                psFigura.close();
-            }
-
-            if (psVenta != null) {
-                psVenta.close();
-            }
-
+            conexion.rollback();
         }
+        return false;
+
     }
+
 }

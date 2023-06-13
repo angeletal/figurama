@@ -22,7 +22,8 @@
     request.setAttribute("listaVentas", fdao.getListaFigurasMasVendidas());
     request.setAttribute("listaOfertas", fdao.getListaFigurasEnOferta());
     request.setAttribute("listaProveedores", pdao.getListaProveedores());
-
+    fdao.cerrarConexion();
+    pdao.cerrarConexion();
 %>
 <!DOCTYPE html>
 <html lang="es">
@@ -101,7 +102,7 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="#">Ver mis favoritos</a>
-                                        <a class="dropdown-item" href="#">Ver mis pedidos</a>
+                                        <a class="dropdown-item" href="pedidos">Ver mis pedidos</a>
                                         <a class="dropdown-item" href="#">Editar perfil</a>
                                         <a class="dropdown-item" href="CerrarSesion">Cerrar sesión</a>
                                     </div>
@@ -173,11 +174,6 @@
                 desde las más económicas hasta ediciones limitadas de alta calidad.</p>
             <a href="catalogo.jsp" class="btn btn-primary my-2">Ver catálogo</a>
         </div>
-
-
-
-
-
 
 
 
@@ -339,13 +335,12 @@
             <div class="flex-container mb-3 mt-3">
 
                 <c:forEach items="${listaProveedores}" var="proveedor">
-                    <div class="flex-item">
+                    <div class="flex-item proveedores">
                         <img src="assets/images/proveedores/${proveedor.url}" alt="Imagen 1" />
                     </div>
                 </c:forEach>
             </div>
         </div>
-        <p>NUESTRAS MARCAS</p>
 
         <%@include file="footer.jsp"%>
 

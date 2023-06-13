@@ -1,8 +1,5 @@
 package modelo.entidades;
 
-import java.util.List;
-import modelo.dao.ListaDeseosDAO;
-
 /**
  *
  * @author Angel
@@ -16,8 +13,6 @@ public class Usuario {
     private String email;
     private String direccion;
     private String telefono;
-    private int puntos;
-    private boolean esBaja;
     private String rol;
 
     
@@ -25,21 +20,19 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String nombre, String apellidos, String contra, String email, String direccion, String telefono, int puntos, boolean esBaja, String rol) {
+    public Usuario(String nombre, String apellidos, String contra, String email, String direccion, String telefono, String rol) {
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.contra = contra;
         this.email = email;
         this.direccion = direccion;
         this.telefono = telefono;
-        this.puntos = puntos;
-        this.esBaja = esBaja;
         this.rol = rol;
     }
     
     // Constructor usado a la hora de guardar un usuario en la BD
 
-    public Usuario(int id, String nombre, String apellidos, String contra, String email, String direccion, String telefono, int puntos, boolean esBaja, String rol) {
+    public Usuario(int id, String nombre, String apellidos, String contra, String email, String direccion, String telefono, String rol) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -47,8 +40,6 @@ public class Usuario {
         this.email = email;
         this.direccion = direccion;
         this.telefono = telefono;
-        this.puntos = puntos;
-        this.esBaja = esBaja;
         this.rol = rol;
     }
 
@@ -108,21 +99,6 @@ public class Usuario {
         this.telefono = telefono;
     }
 
-    public int getPuntos() {
-        return puntos;
-    }
-
-    public void setPuntos(int puntos) {
-        this.puntos = puntos;
-    }
-
-    public boolean isEsBaja() {
-        return esBaja;
-    }
-    
-    public void setEsBaja(boolean esBaja) {
-        this.esBaja = esBaja;
-    }
 
     public String getRol() {
         return rol;

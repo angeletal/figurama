@@ -35,19 +35,20 @@ public class VerFranquicia extends HttpServlet {
    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
 
-    PersonajeDAO pjdao = new PersonajeDAO();
-    SerieDAO sdao = new SerieDAO();
-    FiguraDAO fdao = new FiguraDAO();
 
     // Si se ha llamado desde JS para buscar los personajes o las figuras, devuelve JSON; sino, muestra el JSP
     String nombreSerie = request.getParameter("nombreSerie");
     String nombrePersonaje = request.getParameter("nombrePersonaje");
     if (nombreSerie != null) {
+            PersonajeDAO pjdao = new PersonajeDAO();
+
         List<Personaje> personajes = pjdao.getPersonajesPorSerie(nombreSerie);
         // Convierte la lista de personajes a formato JSON
         Gson gson = new Gson();
         String personajesJson = gson.toJson(personajes);
 
+        pjdao.cerrarConexion();
+       
         // Configura la respuesta como JSON
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -58,7 +59,10 @@ public class VerFranquicia extends HttpServlet {
         out.flush();
         return;
     } else if (nombrePersonaje != null) {
+            FiguraDAO fdao = new FiguraDAO();
+
         List<Figura> figuras = fdao.getListaFiguras(nombrePersonaje, "tipo2");
+        fdao.cerrarConexion();
         // Convierte la lista de figuras a formato JSON
         Gson gson = new Gson();
         String figurasJson = gson.toJson(figuras);
@@ -82,10 +86,12 @@ public class VerFranquicia extends HttpServlet {
         }
 
         String nombre = figuraParam.substring(1).replace("+", " ");
+    SerieDAO sdao = new SerieDAO();
 
         Serie serie = sdao.getSeriePorNombre(nombre);
+        sdao.cerrarConexion();
         if (serie != null) {
-          //  List<Figura> masVendidas = fdao.getListaFigurasMasVendidas(serie.getId());
+          //cosas  List<Figura> masVendidas = fdao.getListaFigurasMasVendidas(serie.getId());
             request.setAttribute("serie", nombre);
        //     request.setAttribute("masVendidas", masVendidas);
 

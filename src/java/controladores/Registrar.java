@@ -29,30 +29,21 @@ public class Registrar extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        /*
-        cosas PARA CUANDO SE REGISTRE DESDE ADMIN
-        HttpSession sesion = request.getSession();
-        Usuario u = (Usuario)sesion.getAttribute("usuario");
-        if(u==null || !u.getRol().equals("Administrador")){
-            response.sendRedirect("../");
-            return;
-        }*/
+      
         String nombre = request.getParameter("nombre").trim();
         String apellidos = request.getParameter("apellidos").trim();
         String contra = request.getParameter("contra");
         String email = request.getParameter("email").trim().toLowerCase();
         String direccion = null;
         String telefono = request.getParameter("telefono").trim();
-        String rol = "común";
+        String rol = "Común";
         UsuarioDAO udao = new UsuarioDAO();
         String redirect = request.getParameter("redirect");
 
         if (!udao.usuarioExiste(email)) {
             Usuario nuevo = new Usuario(nombre, apellidos, contra, email, direccion, telefono, rol);
             udao.anadirUsuario(nuevo);
-            request.setAttribute("cuentaCreada", "La cuenta con email<br>" + email + "<br>ha sido creada satisfactoriamente.");
-
-        
+            request.getSession().setAttribute("cuentaCreada", "La cuenta con email<br>" + email + "<br>ha sido creada satisfactoriamente.");
             response.sendRedirect("login.jsp");
             return;
         } else {
@@ -67,7 +58,7 @@ public class Registrar extends HttpServlet {
         }
         udao.cerrarConexion();
         request.setAttribute("redirect", redirect);
-
+        
         getServletContext().getRequestDispatcher("/register.jsp").forward(request, response);
     }
 

@@ -80,6 +80,9 @@
                                         <a class="dropdown-item" href="#">Ver mis favoritos</a>
                                         <a class="dropdown-item" href="../../pedidos">Ver mis pedidos</a>
                                         <a class="dropdown-item" href="#">Editar perfil</a>
+                                            <c:if test="${sessionScope.usuario.rol eq 'Admin'}">
+                                            <a class="dropdown-item" href="../../admin">Volver al menú de administración</a>
+                                        </c:if>
                                         <a class="dropdown-item" href="CerrarSesion">Cerrar sesión</a>
                                     </div>
                                 </c:if>
@@ -179,7 +182,7 @@
                             <div class="container">
                     <div class="empty-cart text-center">
                        <h3>Actualmente no hay ninguna figura de este personaje</h3>
-                            <a class="btn btn-primary mt-3" href="../"${nombre}>Volver a personajes</a>
+                            <a class="btn btn-primary mt-3" href="../${serieP}">Volver a personajes</a>
                     </div>
                 </div>
                            

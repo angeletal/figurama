@@ -42,6 +42,7 @@ descuento INT NOT NULL,
 idPersonaje INT NOT NULL,
 idProveedor INT NOT NULL,
 idMaterial INT NOT NULL,
+esBaja INT NOT NULL,
 FOREIGN KEY (idPersonaje) REFERENCES Personaje(id),
 FOREIGN KEY (idProveedor) REFERENCES Proveedor(id),
 FOREIGN KEY (idMaterial) REFERENCES Material(id)
@@ -62,7 +63,7 @@ rol VARCHAR(20) NOT NULL
 CREATE TABLE Pedido (
 id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 fecha DATE NOT NULL,
-estado INT,
+estado VARCHAR(60),
 idUsuario INT NOT NULL,
 direccion VARCHAR(150) NOT NULL,
 FOREIGN KEY (idUsuario) REFERENCES Usuario(id)
@@ -102,15 +103,15 @@ CREATE TABLE Imagen (
   FOREIGN KEY (idFigura) REFERENCES Figura(id)
 );
 
-INSERT INTO `usuario`(`nombre`, `apellidos`, `contrasena`, `email`, `telefono`, `rol`) VALUES ('anonmo', ' anonimo', 'anonimo', 'anonimo', 777777777,'comun');
+INSERT INTO `usuario`(`nombre`, `apellidos`, `contrasena`, `email`, `telefono`, `rol`) VALUES ('anonimo', ' anonimo', 'anonimo', 'anonimo', 777777777,'Anónimo');
 
-INSERT INTO `usuario`(`nombre`, `apellidos`, `contrasena`, `email`, `telefono`, `rol`) VALUES ('Miguel', ' Ruiz', 'Miguel1', 'miguel@gmail.com', 677375777,'comun');
+INSERT INTO `usuario`(`nombre`, `apellidos`, `contrasena`, `email`, `telefono`, `rol`) VALUES ('Miguel', ' Ruiz', 'Miguel1', 'miguel@gmail.com', 677375777,'Común');
 
-INSERT INTO `usuario`(`nombre`, `apellidos`, `contrasena`, `email`, `telefono`, `rol`) VALUES ('Pepe', ' Pérez', 'Pepe1', 'pepe@gmail.com', 772334777,'comun');
+INSERT INTO `usuario`(`nombre`, `apellidos`, `contrasena`, `email`, `telefono`, `rol`) VALUES ('Pepe', ' Pérez', 'Pepe1', 'pepe@gmail.com', 772334777,'Común');
 
 INSERT INTO `usuario`(`nombre`, `apellidos`, `contrasena`, `email`, `telefono`, `rol`) VALUES ('Guillermo', ' Hernández', 'Guillermo1', 'guillermo@gmail.com', 777777777,'Admin');
 
-INSERT INTO `usuario`(`nombre`, `apellidos`, `contrasena`, `email`, `telefono`, `rol`) VALUES ('José', ' Fontana', 'Jose1', 'jose@gmail.com', 777777777, 'comun');
+INSERT INTO `usuario`(`nombre`, `apellidos`, `contrasena`, `email`, `telefono`, `rol`) VALUES ('José', ' Fontana', 'Jose1', 'jose@gmail.com', 777777777, 'Común');
 
 INSERT INTO `usuario`(`nombre`, `apellidos`, `contrasena`, `email`, `telefono`, `rol`) VALUES ('Francisco', 'Rivera', 'Francisco1', 'francisco@gmail.com', 777777777,'Admin');
 
@@ -156,75 +157,65 @@ INSERT INTO `proveedor`(`nombre`,`imagenUrl`) VALUES ('Ichibansho', 'ichibansho.
 
 
 
-INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`,`idMaterial`) VALUES ('Figura Monkey D. Luffy One Piece – Banpresto Chronicle King Of Artist 18cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
+INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`,`idMaterial`) VALUES ('Figura Monkey D. Luffy One Piece Banpresto Chronicle King Of Artist 18cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece! Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','59.99','50','18','1','1','1');
 
-Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','59.99','50','18','1','1','1');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D._Luffy_One_Piece_Banpresto_Chronicle_King_Of_Artist_18cm_1.jpg','1');
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Monkey D. Luffy One Piece Banpresto Chronicle King Of Artist 18cm_1.jpg','1');
-
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Monkey D. Luffy One Piece Banpresto Chronicle King Of Artist 18cm_2.jpg','1');
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Monkey D. Luffy One Piece Banpresto Chronicle King Of Artist 18cm_3.jpg','1');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D._Luffy_One_Piece_Banpresto_Chronicle_King_Of_Artist_18cm_2.jpg','1');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D._Luffy_One_Piece_Banpresto_Chronicle_King_Of_Artist_18cm_3.jpg','1');
 
 
-INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`, `idMaterial`) VALUES ('Figura Goku Super Saiyan Dragon Ball Super – Super Zenkai Solid Vol. 1 19cm','¡Añade la figura de Goku Super Saiyan a tu colección de figuras de Dragon Ball Super!
+INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`, `idMaterial`) VALUES ('Figura Goku Super Saiyan Dragon Ball Super Super Zenkai Solid Vol. 1 19cm','¡Añade la figura de Goku Super Saiyan a tu colección de figuras de Dragon Ball Super!
 
 Banpresto presenta la figura de Super Saiyan Son Goku de la popular serie de anime “Dragon Ball Super”. Esta figura está hecha en PVC, mide unos 19 cm de alto e incluye una base soporte para exposición.','2023-05-12',30.99,'40',19,2,1,1);
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Goku Super Saiyan Dragon Ball Super – Super Zenkai Solid Vol. 1 19cm_1.jpg',2);
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Goku Super Saiyan Dragon Ball Super – Super Zenkai Solid Vol. 1 19cm_2.jpg',2);
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Goku Super Saiyan Dragon Ball Super – Super Zenkai Solid Vol. 1 19cm_3.jpg',2);
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Goku_Super_Saiyan_Dragon_Ball_Super_Super_Zenkai_Solid_Vol._1_19cm_1.jpg',2);
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Goku_Super_Saiyan_Dragon_Ball_Super_Super_Zenkai_Solid_Vol._1_19cm_2.jpg',2);
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Goku_Super_Saiyan_Dragon_Ball_Super_Super_Zenkai_Solid_Vol._1_19cm_3.jpg',2);
 
 
 
 
-INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`, `idMaterial`) VALUES ('Figura Monkey D. Luffy One Piece – Banpresto Chronicle King Of Artist 18cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
-
-Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','43.99','20','18','1','1',1);
+INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`, `idMaterial`) VALUES ('Figura Monkey D. Luffy One Piece Kotobukiya Chronicle King Of Artist 18cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece! Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','43.99','20','18','1','1',1);
 
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Monkey D. Luffyy One Piece – Kotobukiya Chronicle King Of Artist 18cm_1.jpg','3');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D._Luffy_One_Piece_Kotobukiya_Chronicle_King_Of_Artist_18cm_1.jpg','3');
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Monkey D. Luffyy One Piece – Kotobukiya Chronicle King Of Artist 18cm_2.jpg','3');
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Monkey D. Luffyy One Piece – Kotobukiya Chronicle King Of Artist 18cm.jpg','3');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D._Luffy_One_Piece_Kotobukiya_Chronicle_King_Of_Artist_18cm_2.jpg','3');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D._Luffy_One_Piece_Kotobukiya_Chronicle_King_Of_Artist_18cm_3.jpg','3');
 
 	
 
 
 
 
-INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`, `idMaterial`) VALUES ('Figura Giyu Ichibansho Chronicle King Of Artist 18cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
-
-Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','45.99','20','18','3','2',1);
+INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`, `idMaterial`) VALUES ('Figura Giyu Ichibansho Chronicle King Of Artist 18cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece! Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','45.99','20','18','3','2',1);
 
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Giyu Ichibansho Chronicle King Of Artist 18cm_1.jpg','4');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Giyu_Ichibansho_Chronicle_King_Of_Artist_18cm_1.jpg','4');
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Giyu Ichibansho Chronicle King Of Artist 18cm_2.jpg','4');
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Giyu Ichibansho Chronicle King Of Artist 18cm_3.jpg','4');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Giyu_Ichibansho_Chronicle_King_Of_Artist_18cm_2.jpg','4');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Giyu_Ichibansho_Chronicle_King_Of_Artist_18cm_3.jpg','4');
 
 
 
-INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`, `descuento`, `idMaterial`) VALUES ('Figura Piccolo King Of Artist 18cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
-
-Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','51.99','20','18','4','1',15,1);
+INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`, `descuento`, `idMaterial`) VALUES ('Figura Piccolo King Of Artist 18cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece! Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','51.99','20','18','4','1',15,1);
 
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Piccolo King Of Artist 18cm_1.jpg','5');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Piccolo_King_Of_Artist_18cm_1.jpg','5');
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Piccolo King Of Artist 18cm_2.jpg','5');
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Piccolo King Of Artist 18cm_3.jpg','5');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Piccolo_King_Of_Artist_18cm_2.jpg','5');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Piccolo_King_Of_Artist_18cm_3.jpg','5');
 
 
 
 
-INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`, `descuento`, `idMaterial`) VALUES ('Figura Vegeta Ichibansho Chronicle King Of Artist 18cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
-
-Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2022-05-12','51.99','20','18','8','3','27',1);
+INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`, `descuento`, `idMaterial`) VALUES ('Figura Vegeta Ichibansho Chronicle King Of Artist 18cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece! Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2022-05-12','51.99','20','18','8','3','27',1);
 
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Vegeta Ichibansho Chronicle King Of Artist 18cm_1.jpg','6');
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Vegeta Ichibansho Chronicle King Of Artist 18cm_2.jpg','6');
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Vegeta Ichibansho Chronicle King Of Artist 18cm_3.jpg','6');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Vegeta_Ichibansho_Chronicle_King_Of_Artist_18cm_1.jpg','6');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Vegeta_Ichibansho_Chronicle_King_Of_Artist_18cm_2.jpg','6');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Vegeta_Ichibansho_Chronicle_King_Of_Artist_18cm_3.jpg','6');
 
 
 
@@ -234,45 +225,45 @@ INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, 
 Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','51.99','20','18','5','2','25',1);
 
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Rengoku Ichibansho Chronicle King Of Artist 18cm_1.jpg','7');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Rengoku_Ichibansho_Chronicle_King_Of_Artist_18cm_1.jpg','7');
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Rengoku Ichibansho Chronicle King Of Artist 18cm_2.jpg','7');
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura Rengoku Ichibansho Chronicle King Of Artist 18cm_3.jpg','7');
-
-
-
-
-INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`,`idMaterial`) VALUES ('FIGURA MONKEY D. LUFFY ONE PIECE – GRANDISTA NERO','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
-
-Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','89.99','50','18','1','1','1');
-
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('FIGURA MONKEY D. LUFFY ONE PIECE – GRANDISTA NERO_1.jpg','8');
-
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('FIGURA MONKEY D. LUFFY ONE PIECE – GRANDISTA NERO_2.jpg','8');
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('FIGURA MONKEY D. LUFFY ONE PIECE – GRANDISTA NERO_3.jpg','8');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Rengoku_Ichibansho_Chronicle_King_Of_Artist_18cm_2.jpg','7');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Rengoku_Ichibansho_Chronicle_King_Of_Artist_18cm_3.jpg','7');
 
 
 
-INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`,`idMaterial`) VALUES ('FIGURA LUFFY ONE PIECE – SCULTURES BIG COLOSSEUM VI VOL.3 8CM','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
+
+INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`,`idMaterial`) VALUES ('Figura Monkey D. Luffy One Piece Grandista Nero','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
 
 Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','89.99','50','18','1','1','1');
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('FIGURA LUFFY ONE PIECE – SCULTURES BIG COLOSSEUM VI VOL.3 8CM_1.jpg','9');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D._Luffy_One_Piece_Grandista_Nero_1.jpg','8');
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('FIGURA LUFFY ONE PIECE – SCULTURES BIG COLOSSEUM VI VOL.3 8CM_2.jpg','9');
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('FIGURA LUFFY ONE PIECE – SCULTURES BIG COLOSSEUM VI VOL.3 8CM_3.jpg','9');
-
-
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D._Luffy_One_Piece_Grandista_Nero_2.jpg','8');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D._Luffy_One_Piece_Grandista_Nero_3.jpg','8');
 
 
 
-INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`,`idMaterial`) VALUES ('FIGURA MONKEY D. LUFFY II ONE PIECE – BATTLE RECORD COLLECTION 15CM','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
+INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`,`idMaterial`) VALUES ('Figura Luffy One Piece - Scultures Big Colloseum VI Vol.3 8cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
 
 Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','89.99','50','18','1','1','1');
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('FIGURA MONKEY D. LUFFY II ONE PIECE – BATTLE RECORD COLLECTION 15CM_1.jpg','10');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Luffy_One_Piece_-_Scultures_Big_Colloseum_VI_Vol.3_8cm_1.jpg','9');
 
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('FIGURA MONKEY D. LUFFY II ONE PIECE – BATTLE RECORD COLLECTION 15CM_2.jpg','10');
-INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('FIGURA MONKEY D. LUFFY II ONE PIECE – BATTLE RECORD COLLECTION 15CM_3.jpg','10');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Luffy_One_Piece_-_Scultures_Big_Colloseum_VI_Vol.3_8cm_2.jpg','9');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Luffy_One_Piece_-_Scultures_Big_Colloseum_VI_Vol.3_8cm_3.jpg','9');
+
+
+
+
+
+INSERT INTO `figura`(`nombre`, `descripcion`, `fechaSalida`, `precio`, `stock`, `altura`, `idPersonaje`, `idProveedor`,`idMaterial`) VALUES ('Figura Monkey D Luffy II One Piece - Battle Record Collection 15cm','¡Añade la figura de The Monkey D. Luffy de la colección Banpresto Chronicle King Of Artist de figuras de One Piece!
+
+Banpresto para la colección Banpresto Chronicle King Of Artist presenta la figura de The Monkey D. Luffy, del popular manga y anime “One Piece”. Esta figura está hecha en PVC mide unos 18 cm de alto e incluye una base soporte especial para exposición.','2023-05-12','89.99','50','18','1','1','1');
+
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D_Luffy_II_One_Piece_-_Battle_Record_Collection_15cm_1.jpg','10');
+
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D_Luffy_II_One_Piece_-_Battle_Record_Collection_15cm_2.jpg','10');
+INSERT INTO `imagen`(`url`, `idFigura`) VALUES ('Figura_Monkey_D_Luffy_II_One_Piece_-_Battle_Record_Collection_15cm_3.jpg','10');
 
 

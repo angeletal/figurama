@@ -116,6 +116,7 @@ function ajustarStockFiguras(figuras) {
         actualizarStock(figura.id);
         document.getElementById("cantidad" + figura.id).value = figura.stock;
         document.getElementById("stock" + figura.id).innerHTML = figura.stock;
+
     }
     alert("Ha ocurrido un fallo en su compra, el stock de los productos será actualizado al máximo disponible");
 
@@ -245,15 +246,21 @@ function disminuirCantidad(idFigura) {
 
 
 function comprar() {
+var pais = document.getElementById("pais").value;
+var provincia = document.getElementById("provincia").value;
+var municipio = document.getElementById("municipio").value;
+var calle = document.getElementById("calle").value;
+
+var direccion = pais + " - " + provincia + " - " + municipio + " - " + calle;
+
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', `Comprar`, true);
+    xhr.open('GET', `Comprar?direccion=${direccion}`, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             // Obtener la respuesta del servidor
             var figuras = JSON.parse(xhr.responseText);
             if (figuras.length === 0) {
-                alert("Compra realizada satisfactoriamente");
-
+                alert("Su compra se ha realizado satisfactoriamente");
                 vaciarCestaSin();
                 window.location.href = "cesta.jsp";
 
@@ -278,8 +285,12 @@ function enviarFormulario(event) {
 
         if (cantidad.value === '0') {
             hayError = true;
-            console.log(hayError);
             var padre = cantidad.parentNode;
+
+
+
+
+
             articulos += padre.id + "\n";
 
         }
@@ -293,6 +304,10 @@ function enviarFormulario(event) {
         validarNombre(event);
         validarFechaCaducidad(event);
         validarCVV(event);
+        validarPais(event);
+        validarProvincia(event);
+        validarMunicipio(event);
+        validarCalle(event);
 
         if (!hayError) {
             event.preventDefault();
@@ -300,6 +315,7 @@ function enviarFormulario(event) {
         }
     }
 }
+
 
 // Agrega un event listener al evento "submit" del formulario
 var formularioTarjeta = document.getElementById("tarjeta");
@@ -345,6 +361,115 @@ function validarNombre(e) {
     e.preventDefault();
     return false;
 }
+
+
+function validarPais(e) {
+    var nombre = document.getElementById("pais");
+    var errorNombre = document.getElementById("errorPais");
+
+    if (nombre.value === null || nombre.value.trim().length === 0) {
+        errorNombre.innerHTML = "Este campo no puede estar vacío.";
+
+    } else if (nombre.value.trim().length > 35) {
+        errorNombre.innerHTML = "Este campo no puede tener una longitud superior a 35 caracteres.";
+    } else {
+        nombre.classList.remove("error");
+        errorNombre.innerHTML = "";
+        return true;
+    }
+    nombre.classList.add("error");
+    if (!hayError) {
+        nombre.focus();
+        hayError = true;
+    }
+    e.preventDefault();
+    return false;
+}
+
+function validarProvincia(e) {
+    var nombre = document.getElementById("provincia");
+    var errorNombre = document.getElementById("errorProvincia");
+
+    if (nombre.value === null || nombre.value.trim().length === 0) {
+        errorNombre.innerHTML = "Este campo no puede estar vacío.";
+
+    } else if (nombre.value.trim().length > 40) {
+        errorNombre.innerHTML = "Este campo no puede tener una longitud superior a 40 caracteres.";
+    } else {
+        nombre.classList.remove("error");
+        errorNombre.innerHTML = "";
+        return true;
+    }
+    nombre.classList.add("error");
+    if (!hayError) {
+        nombre.focus();
+        hayError = true;
+    }
+    e.preventDefault();
+    return false;
+}
+
+function validarMunicipio(e) {
+    var nombre = document.getElementById("municipio");
+    var errorNombre = document.getElementById("errorMunicipio");
+
+    if (nombre.value === null || nombre.value.trim().length === 0) {
+        errorNombre.innerHTML = "Este campo no puede estar vacío.";
+
+    } else if (nombre.value.trim().length > 40) {
+        errorNombre.innerHTML = "Este campo no puede tener una longitud superior a 40 caracteres.";
+    } else {
+        nombre.classList.remove("error");
+        errorNombre.innerHTML = "";
+        return true;
+    }
+    nombre.classList.add("error");
+    if (!hayError) {
+        nombre.focus();
+        hayError = true;
+    }
+    e.preventDefault();
+    return false;
+}
+
+
+function validarCalle(e) {
+    var nombre = document.getElementById("calle");
+    var errorNombre = document.getElementById("errorCalle");
+
+
+    var regex = /^(?=.*\d)(?=.*[a-zA-ZáéíóúÁÉÍÓÚñÑ])[a-zA-ZáéíóúÁÉÍÓÚñÑ\d\s]*$/;
+
+    if (nombre.value === null || nombre.value.trim().length === 0) {
+        errorNombre.innerHTML = "Este campo no puede estar vacío.";
+
+    } else if (nombre.value.trim().length > 40) {
+        errorNombre.innerHTML = "Este campo no puede tener una longitud superior a 40 caracteres.";
+    } else if (!regex.test(nombre.value.trim())) {
+        errorNombre.innerHTML = "La dirección debe contener al menos un número y una letra, y puede incluir mayúsculas, minúsculas y tildes.";
+
+    } else {
+        nombre.classList.remove("error");
+        errorNombre.innerHTML = "";
+        return true;
+    }
+    nombre.classList.add("error");
+    if (!hayError) {
+        nombre.focus();
+        hayError = true;
+    }
+    e.preventDefault();
+    return false;
+}
+
+
+
+
+
+
+
+
+
 
 
 function validarFechaCaducidad(e) {

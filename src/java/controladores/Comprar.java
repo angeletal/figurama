@@ -47,7 +47,8 @@ public class Comprar extends HttpServlet {
             idUsuario = usuario.getId();
         }
 
-        List<Figura> figuras = cdao.comprar(cesta, idUsuario, "direccionPlaceholder");
+        
+        List<Figura> figuras = cdao.comprar(cesta, idUsuario, request.getParameter("direccion"));
         //Si la lista está vacía es que se ha podido realizar la compra, así que se borra la cesta tanto de sesión como de la BD
         if (!figuras.isEmpty()) {
 
@@ -98,6 +99,7 @@ public class Comprar extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         processRequest(request, response);
     }
 
@@ -112,6 +114,8 @@ public class Comprar extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+                request.setCharacterEncoding("UTF-8");
+
         processRequest(request, response);
     }
 

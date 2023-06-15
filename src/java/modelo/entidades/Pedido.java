@@ -1,8 +1,10 @@
 package modelo.entidades;
 
+import com.google.gson.Gson;
 import java.util.Date;
 import java.util.List;
 import modelo.dao.PedidoDAO;
+import modelo.dao.UsuarioDAO;
 
 /**
  *
@@ -79,7 +81,26 @@ public class Pedido {
         pdao.cerrarConexion();
         return articulos;
     }
+    
+     public String getEmailUsuario() {
+        UsuarioDAO udao = new UsuarioDAO();
+        String email = udao.getUsuarioPorId(idUsuario).getEmail();
+        udao.cerrarConexion();
+        return email;
+    }
+     
+     public double getPrecioTotal(){
+         double precio=0;
+         for(ArticuloPedido articulo:getArticulos()){
+             precio+=articulo.getPrecio()*articulo.getCantidad();
+         }
+         return Math.round(precio * 100) / 100.00;
+        
+     }
 
-   
+    public String getArticulosJson(){
+       Gson gson = new Gson();
+       return gson.toJson(getArticulos());
+     }
 
 }

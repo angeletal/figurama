@@ -138,6 +138,25 @@ function mostrarResultados(respuesta) {
     }
 }
 
+function valorSeguro(texto) {
+
+  // Strip slashes
+  var sinBarras = texto.trim().replace(/\\/g, '');
+
+  // HTML characters
+  var especiales = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;',
+    '"': '&quot;',
+    '\'': '&#x27;',
+    '/': '&#x2F;'
+  };
+
+  const sinEspeciales = sinBarras.replace(/[<>&"'/]/g, (letra) => especiales[letra]);
+
+  return sinEspeciales;
+}
 
 // Función para realizar la búsqueda
 function realizarBusqueda() {
@@ -211,11 +230,11 @@ function buscarTodo() {
     } else {
         var texto;
         if (paginaSecundaria) {
-            texto = "../busqueda/" + inputBusqueda.value.trim();
+            texto = "../busqueda/" + valorSeguro(inputBusqueda.value.trim());
         } else if (tresSaltosBusqueda) {
-            texto = "../../busqueda/" + inputBusqueda.value.trim();
+            texto = "../../busqueda/" + valorSeguro(inputBusqueda.value.trim());
         } else {
-            texto = "busqueda/" + inputBusqueda.value.trim();
+            texto = "busqueda/" + valorSeguro(inputBusqueda.value.trim());
         }
         window.location.href = texto;
     }

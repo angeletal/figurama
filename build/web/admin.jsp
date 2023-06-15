@@ -23,9 +23,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"/>
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
-        <link rel="stylesheet" href="assets/css/admin.css">
         <link rel="stylesheet" href="assets/css/styles.css">
-
+        <link rel="stylesheet" href="assets/css/admin.css">
     </head>
     <body>
 
@@ -33,13 +32,13 @@
 
         <nav class="mt-4">
             <ul>
-                <li onclick="cambiarTabla('Usuario')" id="Usuario" <c:if test="${tablaMostrada eq 'Usuario'}">class="active"</c:if>>Usuarios</li>
-                <li onclick="cambiarTabla('Serie')" id="Serie"<c:if test="${tablaMostrada eq 'Serie'}">class="active"</c:if>>Series</li>
-                <li onclick="cambiarTabla('Personaje')" id="Personaje"<c:if test="${tablaMostrada eq 'Personaje'}">class="active"</c:if>>Personajes</li>
+                <li id="Usuario" <c:if test="${tablaMostrada eq 'Usuario'}">class="active"</c:if>>Usuarios</li>
+                <li id="Serie" <c:if test="${tablaMostrada eq 'Serie'}">class="active"</c:if>>Series</li>
+                <li id="Personaje" <c:if test="${tablaMostrada eq 'Personaje'}">class="active"</c:if>>Personajes</li>
                 <li onclick="cambiarTabla('Figura')" id="Figura" <c:if test="${tablaMostrada eq 'Figura'}">class="active"</c:if>>Figuras</li>
                 <li onclick="cambiarTabla('Pedido')" id="Pedido"<c:if test="${tablaMostrada eq 'Pedido'}">class="active"</c:if>>Pedidos</li>
-                <li onclick="cambiarTabla('Proveedor')" id="Proveedor"<c:if test="${tablaMostrada eq 'Proveedor'}">class="active"</c:if>>Proveedores</li>
-                <li onclick="cambiarTabla('Material')" id="Material"<c:if test="${tablaMostrada eq 'Material'}">class="active"</c:if>>Materiales</li>
+                <li id="Proveedor"<c:if test="${tablaMostrada eq 'Proveedor'}">class="active"</c:if>>Proveedores</li>
+                <li id="Material"<c:if test="${tablaMostrada eq 'Material'}">class="active"</c:if>>Materiales</li>
                     <li onclick="location.href = 'index.jsp'" style="float:right">Ir a la tienda</li>
 
                 </ul>
@@ -49,15 +48,15 @@
 
             <span id="tablaMostrada" style="display:none">${tablaMostrada}</span>
 
-        <div class="container mb-5 text-center" style="margin-top:10px; width: 100%">
+        <div class="container mb-5 text-center" style="margin-top:10px; width: auto">
 
 
+            <div class="mt-2 text-center w-100">
+                <button class="btn btn-primary text-center" id="anadir">Añadir ${tablaMostrada}</button>
+            </div>
 
-            <button class="btn btn-primary mb-5 mt-3" id="anadirFigura">Añadir ${tablaMostrada}</button>
 
-
-
-            <table id="tabla" class="table table-striped table-bordered table-hover table-responsive" style="width:100%">
+            <table id="tabla" class="table table-striped table-bordered table-hover table-responsive">
 
 
 
@@ -85,21 +84,22 @@
             </div>
         </div>
 
-        <div class="modal fade" id="modalEliminarFigura" tabindex="-1" aria-labelledby="modalEliminarFiguraLabel" aria-hidden="true">
+        <div class="modal fade" id="modalBajaFigura" tabindex="-1" aria-labelledby="modalBajaFiguraLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Descripción de la figura:<br> <span id="figuraNombreModal"></span></h5>
+                        <h5 class="modal-title">Editar Baja</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
                     </div>
-                    <form action="CrudFigura?accion=eliminar" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" id="figuraIdBorrar" name="id">
+                    <form action="CrudFigura?accion=cambiarEstado" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" id="figuraIdBaja" name="id">
 
                         <div class="modal-body">
-                            ¿Está seguro/a de que desea eliminar la figura <span id="figuraNombreBorrar"></span>?
+                            ¿Está seguro/a de que desea <span id="preguntaBajaActual"></span> la figura<br> <span id="figuraNombreBaja"></span>?
                         </div>
                         <div class="modal-footer">
-                            <input type="submit" id="eliminarFigura" class="btn btn-primary" value="Eliminar figura"/>
+                            
+                            <input type="submit" id="submitBaja" class="btn btn-primary" value="Aceptar"/>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         </div>
                     </form>
@@ -132,7 +132,7 @@
                             <div class="form-group">
                                 <label for="figuraImagen2Old">Segunda Imagen Actual:</label>
                                 <div class="text-center">
-                                    <img id="figuraImagen2Old"  alt="Imagen 1" class="img-responsive img-preview">
+                                    <img id="figuraImagen2Old"  alt="Imagen 2" class="img-responsive img-preview">
                                 </div>
                                 <br>
                                 <label for="figuraImagen2">Nueva Segunda Imagen:</label>
@@ -141,7 +141,7 @@
                             <div class="form-group">
                                 <label for="figuraImagen3Old">Tercera Imagen Actual:</label>
                                 <div class="text-center">
-                                    <img id="figuraImagen3Old"  alt="Imagen 1" class="img-responsive img-preview">
+                                    <img id="figuraImagen3Old"  alt="Imagen 2" class="img-responsive img-preview">
                                 </div>
                                 <br>
                                 <label for="figuraImagen3">Nueva Tercera Imagen:</label>
@@ -329,6 +329,25 @@
             </div>
         </div>
 
+
+        <div class="modal fade" id="modalDetallesPedido" tabindex="-1" aria-labelledby="modalDescripcionFiguraLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detalles del pedido número:<span id="pedidoDetallesNumero"></span></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="pedidoDetallesArticulos"></p>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 

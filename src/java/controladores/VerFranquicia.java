@@ -32,76 +32,74 @@ public class VerFranquicia extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-
-    // Si se ha llamado desde JS para buscar los personajes o las figuras, devuelve JSON; sino, muestra el JSP
-    String nombreSerie = request.getParameter("nombreSerie");
-    String nombrePersonaje = request.getParameter("nombrePersonaje");
-    if (nombreSerie != null) {
+        // Si se ha llamado desde JS para buscar los personajes o las figuras, devuelve JSON; sino, muestra el JSP
+        String nombreSerie = request.getParameter("nombreSerie");
+        String nombrePersonaje = request.getParameter("nombrePersonaje");
+        if (nombreSerie != null) {
             PersonajeDAO pjdao = new PersonajeDAO();
 
-        List<Personaje> personajes = pjdao.getPersonajesPorSerie(nombreSerie);
-        // Convierte la lista de personajes a formato JSON
-        Gson gson = new Gson();
-        String personajesJson = gson.toJson(personajes);
+            List<Personaje> personajes = pjdao.getPersonajesPorSerie(nombreSerie);
+            // Convierte la lista de personajes a formato JSON
+            Gson gson = new Gson();
+            String personajesJson = gson.toJson(personajes);
 
-        pjdao.cerrarConexion();
-       
-        // Configura la respuesta como JSON
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+            pjdao.cerrarConexion();
 
-        // Envía la respuesta JSON al cliente
-        PrintWriter out = response.getWriter();
-        out.print(personajesJson);
-        out.flush();
-        return;
-    } else if (nombrePersonaje != null) {
+            // Configura la respuesta como JSON
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            // Envía la respuesta JSON al cliente
+            PrintWriter out = response.getWriter();
+            out.print(personajesJson);
+            out.flush();
+            return;
+        } else if (nombrePersonaje != null) {
             FiguraDAO fdao = new FiguraDAO();
 
-        List<Figura> figuras = fdao.getListaFiguras(nombrePersonaje, "tipo2");
-        fdao.cerrarConexion();
-        // Convierte la lista de figuras a formato JSON
-        Gson gson = new Gson();
-        String figurasJson = gson.toJson(figuras);
+            List<Figura> figuras = fdao.getListaFiguras(nombrePersonaje, "tipo2");
+            fdao.cerrarConexion();
+            // Convierte la lista de figuras a formato JSON
+            Gson gson = new Gson();
+            String figurasJson = gson.toJson(figuras);
 
-        // Configura la respuesta como JSON
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+            // Configura la respuesta como JSON
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
 
-        // Envía la respuesta JSON al cliente
-        PrintWriter out = response.getWriter();
-        out.print(figurasJson);
-        out.flush();
-        return;
-    } else {
-        response.setContentType("text/html;charset=UTF-8");
-
-        String figuraParam = request.getPathInfo();
-        if (figuraParam == null || figuraParam.equals("/")) {
-            response.sendRedirect("../franquicias");
+            // Envía la respuesta JSON al cliente
+            PrintWriter out = response.getWriter();
+            out.print(figurasJson);
+            out.flush();
             return;
-        }
-
-        String nombre = figuraParam.substring(1).replace("+", " ");
-    SerieDAO sdao = new SerieDAO();
-
-        Serie serie = sdao.getSeriePorNombre(nombre);
-        sdao.cerrarConexion();
-        if (serie != null) {
-          //cosas  List<Figura> masVendidas = fdao.getListaFigurasMasVendidas(serie.getId());
-            request.setAttribute("serie", nombre);
-       //     request.setAttribute("masVendidas", masVendidas);
-
-            getServletContext().getRequestDispatcher("/franquicia.jsp").forward(request, response);
         } else {
-            response.sendRedirect("../error.jsp");
-            return;
-        }
-    }
+            response.setContentType("text/html;charset=UTF-8");
 
+            String figuraParam = request.getPathInfo();
+            if (figuraParam == null || figuraParam.equals("/")) {
+                response.sendRedirect("../franquicias");
+                return;
+            }
+
+            String nombre = figuraParam.substring(1).replace("+", " ");
+            SerieDAO sdao = new SerieDAO();
+
+            Serie serie = sdao.getSeriePorNombre(nombre);
+            sdao.cerrarConexion();
+            if (serie != null) {
+                //cosas  List<Figura> masVendidas = fdao.getListaFigurasMasVendidas(serie.getId());
+                request.setAttribute("serie", nombre);
+                //     request.setAttribute("masVendidas", masVendidas);
+
+                getServletContext().getRequestDispatcher("/franquicia.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("../error.jsp");
+                return;
+            }
+        }
 
     }
 

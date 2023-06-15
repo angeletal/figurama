@@ -29,7 +29,6 @@
                     <div class="col-md-4">
                         <h4>Síguenos en</h4>
                         <ul class="list-inline mb-3">
-                            <!-- cosas - crear perfiles reales -->
                             <li class="list-inline-item"><a href="https://es-es.facebook.com/" target="_blank" title="Ir a Facebook"><i class="fab fa-facebook fa-2x"></i></a></li>
                             <li class="list-inline-item"><a href="https://twitter.com/" target="_blank"  title="Ir a Twitter"><i class="fab fa-twitter fa-2x"></i></a></li>
                             <li class="list-inline-item"><a href="https://www.instagram.com/" target="_blank"  title="Ir a Instagram"><i class="fab fa-instagram fa-2x"></i></a></li>

@@ -8,6 +8,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%
+    HttpSession sesion = request.getSession();
     //Inicializamos la página a la que se va a ir 
         String redirect = request.getParameter("redirect");
 
@@ -15,7 +16,11 @@
             redirect = "index.jsp";
         }
 
-        request.getSession().setAttribute("redirect", redirect);
+        sesion.setAttribute("redirect", redirect);
+       if(sesion.getAttribute("cuentaCreada")!=null){
+       request.setAttribute("cuentaCreada", sesion.getAttribute("cuentaCreada"));
+       sesion.removeAttribute("cuentaCreada");
+    }
     
 %>
 
@@ -28,6 +33,7 @@
 
         <title>Figurama - Login</title>
 
+       
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -73,7 +79,9 @@
 
 
     </div>
-
+ <c:if test="${not empty cuentaCreada}">
+            <script>alert("Cuenta creada satisfactoriamente");</script>
+        </c:if>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>

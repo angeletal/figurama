@@ -2,18 +2,20 @@
 package controladores;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modelo.dao.PedidoDAO;
 
 /**
  *
  * @author Angel
  */
-@WebServlet(name = "CrudPedido", urlPatterns = {"/CrudPedido"})
-public class CrudPedido extends HttpServlet {
+@WebServlet(name = "EditarEstado", urlPatterns = {"/EditarEstado"})
+public class EditarEstado extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -27,7 +29,15 @@ public class CrudPedido extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-       
+        
+        String estado = request.getParameter("estado");
+        int id = Integer.parseInt(request.getParameter("id"));
+        
+        
+        PedidoDAO pddao = new PedidoDAO();
+        pddao.modificarEstado(estado, id);
+        pddao.cerrarConexion();
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -42,6 +52,8 @@ public class CrudPedido extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+                request.setCharacterEncoding("UTF-8");
+
         processRequest(request, response);
     }
 
@@ -56,6 +68,8 @@ public class CrudPedido extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+                request.setCharacterEncoding("UTF-8");
+
         processRequest(request, response);
     }
 

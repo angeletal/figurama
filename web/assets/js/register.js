@@ -65,14 +65,13 @@ function validarTelefono(e) {
     if (telefono.value === null || telefono.value.trim().length === 0) {
         errorTelefono.innerHTML = "Este campo no puede estar vacío.";
 
-    } else if (!/^\d{3}-\d{3}-\d{4}$/.test(telefono.value.trim())) {
-        errorTelefono.innerHTML = "Este campo debe tener un formato de número válido.<br>Ejemplo: 644826846";
+    } else if (!/^\d{9}$/.test(telefono.value.trim())) {
+        errorTelefono.innerHTML = "Este campo debe tener exactamente 9 dígitos.<br>Ejemplo: 644826846";
     } else {
         telefono.classList.remove("error");
         errorTelefono.innerHTML = "";
         return true;
     }
-    telefono.value = "";
     telefono.classList.add("error");
     if (!hayError) {
         telefono.focus();
@@ -156,7 +155,6 @@ function validarContra(e) {
         errorContra.innerHTML = "";
         return true;
     }
-    contra.value = "";
     contra.classList.add("error");
     if (!hayError) {
         contra.focus();
@@ -164,4 +162,24 @@ function validarContra(e) {
     }
     e.preventDefault();
     return false;
+}
+
+
+
+function valorSeguro(texto) {
+
+  var sinBarras = texto.trim().replace(/\\/g, '');
+
+  var especiales = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;',
+    '"': '&quot;',
+    '\'': '&#x27;',
+    '/': '&#x2F;'
+  };
+
+  const sinEspeciales = sinBarras.replace(/[<>&"'/]/g, (letra) => especiales[letra]);
+
+  return sinEspeciales;
 }

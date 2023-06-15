@@ -67,8 +67,6 @@
                                 <p class="mt-3 text-center text-danger">${error}</p>
                             </c:if>
 
-                            <!-- cosas campo direccion -->
-
                             <div class="d-flex flex-column">
                                 <!--Aquí se enviarán los datos a un servlet que compruebe que los datos son
                                 correctos , en caso de que no lo sea vuelve a esta página indicando algún mensaje de error-->

@@ -1,4 +1,3 @@
-
 package controladores;
 
 import com.google.gson.Gson;
@@ -13,11 +12,20 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modelo.dao.PedidoDAO;
 import modelo.dao.PersonajeDAO;
+import modelo.dao.SerieDAO;
+import modelo.dao.UsuarioDAO;
 import modelo.dao.figura.FiguraDAO;
 import modelo.dao.figura.MaterialDAO;
 import modelo.dao.figura.ProveedorDAO;
+import modelo.entidades.Pedido;
+import modelo.entidades.Personaje;
+import modelo.entidades.Serie;
+import modelo.entidades.Usuario;
 import modelo.entidades.figura.Figura;
+import modelo.entidades.figura.Material;
+import modelo.entidades.figura.Proveedor;
 
 /**
  *
@@ -43,14 +51,25 @@ public class RellenarTabla extends HttpServlet {
 
         String resultado = "";
 
+        FiguraDAO fdao = new FiguraDAO();
+        PersonajeDAO pjdao = new PersonajeDAO();
+        ProveedorDAO pdao = new ProveedorDAO();
+        MaterialDAO mdao = new MaterialDAO();
+        PedidoDAO pddao = new PedidoDAO();
+        SerieDAO sdao = new SerieDAO();
+        UsuarioDAO udao = new UsuarioDAO();
+
+        List<Figura> figuras = fdao.getListaFigurasAdmin();
+        List<Pedido> pedidos = pddao.obtenerPedidos();
+        List<Serie> series = sdao.getListaSeries();
+        List<Personaje> personajes = pjdao.getListaPersonajes();
+        List<Material> materiales = mdao.getListaMateriales();
+        List<Proveedor> proveedores = pdao.getListaProveedores();
+        List<Usuario> usuarios = udao.getListaUsuarios();
+
         switch (tablaAMostrar) {
 
             case "Figura":
-                FiguraDAO fdao = new FiguraDAO();
-                PersonajeDAO pjdao = new PersonajeDAO();
-                ProveedorDAO pdao = new ProveedorDAO();
-                MaterialDAO mdao = new MaterialDAO();
-                List<Figura> figuras = fdao.getListaFiguras();
 
                 List<Map<String, Object>> nuevaListaFiguras = new ArrayList();
 
@@ -71,35 +90,139 @@ public class RellenarTabla extends HttpServlet {
                     nuevaFigura.put("Descuento", figura.getPorcentajeDescuento());
                     nuevaFigura.put("Proveedor", figura.getProveedor().getNombre());
                     nuevaFigura.put("Material", figura.getMaterial().getNombre());
-                    nuevaFigura.put("Personajes", pjdao.getListaPersonajes());
-                    nuevaFigura.put("Materiales", mdao.getListaMateriales());
-                    nuevaFigura.put("Proveedores", pdao.getListaProveedores());
+                    nuevaFigura.put("Personajes", personajes);
+                    nuevaFigura.put("Materiales", materiales);
+                    nuevaFigura.put("Proveedores", proveedores);
+                    nuevaFigura.put("Baja", figura.getEsBaja());
 
                     nuevaListaFiguras.add(nuevaFigura);
                 }
 
                 resultado = gson.toJson(nuevaListaFiguras);
-                pdao.cerrarConexion();
-                fdao.cerrarConexion();
-                pjdao.cerrarConexion();
-                mdao.cerrarConexion();
+
                 break;
-           /* case "Pedido":
-                PedidoDAO pedidos = new PedidoDAO();
+            case "Pedido":
 
                 List<Map<String, Object>> nuevaListaPedidos = new ArrayList();
 
-                for (Figura figura : figuras) {
+                for (Pedido pedido : pedidos) {
 
-                   
-                    nuevaListaFiguras.add(nuevaFigura);
+                    Map<String, Object> nuevoPedido = new HashMap();
+                    nuevoPedido.put("Id", pedido.getId());
+                    nuevoPedido.put("Fecha", pedido.getFecha());
+
+                    nuevoPedido.put("Estado", pedido.getEstado());
+                    nuevoPedido.put("Comprador", pedido.getEmailUsuario());
+
+                    nuevoPedido.put("Dirección", pedido.getDireccion());
+                    nuevoPedido.put("Detalles", pedido.getArticulos());
+                    nuevoPedido.put("Total", pedido.getPrecioTotal());
+                    nuevaListaPedidos.add(nuevoPedido);
                 }
 
-                resultado = gson.toJson(nuevaListaFiguras);
-                
-                break;*/
+                resultado = gson.toJson(nuevaListaPedidos);
+
+                break;
+
+            case "Serie":
+                List<Map<String, Object>> nuevaListaSeries = new ArrayList();
+
+                for (Serie serie : series) {
+
+                    Map<String, Object> nuevaSerie = new HashMap();
+                    nuevaSerie.put("Id", serie.getId());
+                    nuevaSerie.put("Imagen", serie.getUrl());
+                    nuevaSerie.put("Nombre", serie.getNombre());
+
+                    nuevaListaSeries.add(nuevaSerie);
+                }
+
+                resultado = gson.toJson(nuevaListaSeries);
+
+                break;
+
+            case "Personaje":
+                List<Map<String, Object>> nuevaListaPersonajes = new ArrayList();
+
+                for (Personaje personaje : personajes) {
+
+                    Map<String, Object> nuevoPersonaje = new HashMap();
+                    nuevoPersonaje.put("Id", personaje.getId());
+                    nuevoPersonaje.put("Imagen", personaje.getUrl());
+                    nuevoPersonaje.put("Nombre", personaje.getNombre());
+                    nuevoPersonaje.put("Serie", personaje.getNombreSerie());
+
+                    nuevaListaPersonajes.add(nuevoPersonaje);
+                }
+
+                resultado = gson.toJson(nuevaListaPersonajes);
+
+                break;
+
+            case "Material":
+
+                List<Map<String, Object>> nuevaListaMateriales = new ArrayList();
+
+                for (Material material : materiales) {
+
+                    Map<String, Object> nuevoMaterial = new HashMap();
+                    nuevoMaterial.put("Id", material.getId());
+                    nuevoMaterial.put("Nombre", material.getNombre());
+
+                    nuevaListaMateriales.add(nuevoMaterial);
+                }
+
+                resultado = gson.toJson(nuevaListaMateriales);
+
+                break;
+
+            case "Proveedores":
+
+                List<Map<String, Object>> nuevaListaProveedores = new ArrayList();
+
+                for (Proveedor proveedor : proveedores) {
+
+                    Map<String, Object> nuevoProveedor = new HashMap();
+                    nuevoProveedor.put("Id", proveedor.getId());
+                    nuevoProveedor.put("Nombre", proveedor.getNombre());
+                    nuevoProveedor.put("Imagen", proveedor.getUrl());
+
+                    nuevaListaProveedores.add(nuevoProveedor);
+                }
+
+                resultado = gson.toJson(nuevaListaProveedores);
+
+                break;
+
+            case "Usuarios":
+
+                List<Map<String, Object>> nuevaListaUsuarios = new ArrayList();
+
+                for (Usuario usuario : usuarios) {
+
+                    Map<String, Object> nuevoUsuario = new HashMap();
+                    nuevoUsuario.put("Id", usuario.getId());
+                    nuevoUsuario.put("Nombre", usuario.getNombre());
+                    nuevoUsuario.put("Apellidos", usuario.getApellidos());
+                    nuevoUsuario.put("Email", usuario.getEmail());
+                    nuevoUsuario.put("Dirección", usuario.getDireccion());
+                    nuevoUsuario.put("Teléfono", usuario.getTelefono());
+                    nuevoUsuario.put("Rol", usuario.getRol());
+
+                    nuevaListaUsuarios.add(nuevoUsuario);
+                }
+
+                resultado = gson.toJson(nuevaListaUsuarios);
+
+                break;
+
         }
 
+        pdao.cerrarConexion();
+        fdao.cerrarConexion();
+        pjdao.cerrarConexion();
+        mdao.cerrarConexion();
+        sdao.cerrarConexion();
         // Configura la respuesta como JSON
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

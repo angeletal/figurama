@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -56,10 +53,19 @@ public class CrudFigura extends HttpServlet {
             Figura figura;
             FiguraDAO fdao = new FiguraDAO();
 
-            if (accion.equals("eliminar")) {
+            if (accion.equals("cambiarEstado")) {
                 int idFigura = Integer.parseInt(request.getParameter("id"));
-                fdao.eliminarFigura(idFigura);
-                mensaje = "Figura eliminada correctamente";
+
+                int estado;
+                //Si es 1 es que si, 0 es que no
+                if (fdao.getFiguraPorId(idFigura).getEsBaja() == 1) {
+                    estado = 0;
+                    mensaje = "Figura dada de alta correctamente";
+                } else {
+                    estado = 1;
+                    mensaje = "Figura dada de baja correctamente";
+                }
+                fdao.cambiarEstado(idFigura, estado);
             } else {
 
                 MaterialDAO mdao = new MaterialDAO();
@@ -209,65 +215,72 @@ public class CrudFigura extends HttpServlet {
                     }
                 }
 
-                String path = request.getServletContext().getRealPath("");
+                // Obtén la parte de la imagen del archivo cargado
+                Part filePart = request.getPart("figuraImagen1");
+                // Verifica si la parte de la imagen está presente y si tiene un tamaño superior a 0
+                if (filePart != null && filePart.getSize() > 0) {
+                    String fileName = nombre.replace(" ", "_") + "_1.jpg";
 
-                String ubicacion = getServletContext().getRealPath("/assets/images/figuras/");
+                    InputStream fileContent = filePart.getInputStream();
+                    String applicationPath = request.getServletContext().getRealPath("");
+                    File uploads = new File(applicationPath + File.separator + "assets" + File.separator + "images" + File.separator + "figuras");
+                    File file = new File(uploads, fileName);
 
-                Part imagen1Part = request.getPart("figuraImagen1");
-                String nombreImagen1 = nombre + "_1.jpg";
-                String rutaDestino = ubicacion + File.separator + (nombreImagen1);
-                
-                 Path rutaArchivo = Paths.get(rutaDestino);
-
-                // Verificar si el archivo existe y eliminarlo si es necesario
-                if (Files.exists(rutaArchivo)) {
-                    Files.delete(rutaArchivo);
-                }
-                
-                
-                Files.copy(imagen1Part.getInputStream(), Paths.get(ubicacion, nombreImagen1));
-
-                
-                
-   Part imagen2Part = request.getPart("figuraImagen2");
-                String nombreImagen2 = nombre + "_2.jpg";
-                String rutaDestino2 = ubicacion + File.separator + (nombreImagen2);
-                
-                 Path rutaArchivo2 = Paths.get(rutaDestino2);
-
-                // Verificar si el archivo existe y eliminarlo si es necesario
-                if (Files.exists(rutaArchivo2)) {
-                    Files.delete(rutaArchivo2);
-                }
-                
-                
-                Files.copy(imagen2Part.getInputStream(), Paths.get(ubicacion, nombreImagen2));
-
-
-                
-                
-                
-                
-                
-                
-                
-                
-           
-                Part imagen3Part = request.getPart("figuraImagen3");
-                String nombreImagen3 = nombre + "_3.jpg";
-                if (imagen3Part != null && imagen3Part.getSize() > 0) {
-
-                    File carpeta = new File(path + File.separator + "assets" + File.separator + "images" + File.separator + "figuras");
-
-                    if (!carpeta.exists()) {
-                        carpeta.mkdirs();
+                    // Si el archivo existe en el servidor, eliminarlo
+                    if (file.exists()) {
+                        file.delete();
                     }
 
-                    File imagen = new File(carpeta, nombreImagen3);
-
-                    try ( InputStream input = imagen3Part.getInputStream()) {
-                        Files.copy(input, imagen.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    // Subir la nueva imagen
+                    try ( InputStream input = fileContent) {
+                        Files.copy(input, file.toPath());
                     }
+                }
+
+                // Obtén la parte de la imagen del archivo cargado
+                Part filePart2 = request.getPart("figuraImagen2");
+                // Verifica si la parte de la imagen está presente y si tiene un tamaño superior a 0
+                if (filePart2 != null && filePart2.getSize() > 0) {
+                    String fileName = nombre.replace(" ", "_") + "_2.jpg";
+
+                    InputStream fileContent = filePart2.getInputStream();
+                    String applicationPath = request.getServletContext().getRealPath("");
+                    File uploads = new File(applicationPath + File.separator + "assets" + File.separator + "images" + File.separator + "figuras");
+                    File file = new File(uploads, fileName);
+
+                    // Si el archivo existe en el servidor, eliminarlo
+                    if (file.exists()) {
+                        file.delete();
+                    }
+
+                    // Subir la nueva imagen
+                    try ( InputStream input = fileContent) {
+                        Files.copy(input, file.toPath());
+                    }
+
+                }
+
+                // Obtén la parte de la imagen del archivo cargado
+                Part filePart3 = request.getPart("figuraImagen3");
+                // Verifica si la parte de la imagen está presente y si tiene un tamaño superior a 0
+                if (filePart3 != null && filePart3.getSize() > 0) {
+                    String fileName = nombre.replace(" ", "_") + "_3.jpg";
+
+                    InputStream fileContent = filePart3.getInputStream();
+                    String applicationPath = request.getServletContext().getRealPath("");
+                    File uploads = new File(applicationPath + File.separator + "assets" + File.separator + "images" + File.separator + "figuras");
+                    File file = new File(uploads, fileName);
+
+                    // Si el archivo existe en el servidor, eliminarlo
+                    if (file.exists()) {
+                        file.delete();
+                    }
+
+                    // Subir la nueva imagen
+                    try ( InputStream input = fileContent) {
+                        Files.copy(input, file.toPath());
+                    }
+
                 }
 
                 if (accion.equals("modificar")) {
@@ -288,14 +301,20 @@ public class CrudFigura extends HttpServlet {
 
                     figura = new Figura(id, nombre, descripcion, fecha, precio, stock, altura, pjdao.getPersonajePorNombre(nombrePersonaje.toLowerCase()).getId(), pdao.getProveedorPorNombre(nombreProveedor.toLowerCase()).getId(), descuento, mdao.getMaterialPorNombre(nombreMaterial.toLowerCase()).getId());
                     fdao.modificarFigura(figura);
-                    mensaje = "Figura modificada correctamente";
+                    mensaje = "La figura " + nombre+" ha sido modificada satisfactoriamente";
 
                 } else if (accion.equals("anadir")) {
-                    figura = new Figura(nombre, descripcion, fecha, precio, stock, altura, pjdao.getPersonajePorNombre(nombrePersonaje.toLowerCase()).getId(), pdao.getProveedorPorNombre(nombreProveedor.toLowerCase()).getId(), descuento, mdao.getMaterialPorNombre(nombreMaterial.toLowerCase()).getId());
-                    fdao.anadirFigura(figura);
-                    mensaje = "Figura añadida correctamente";
+                    
+                    if (!fdao.figuraExiste(nombre)) {
 
+                       figura = new Figura(nombre, descripcion, fecha, precio, stock, altura, pjdao.getPersonajePorNombre(nombrePersonaje.toLowerCase()).getId(), pdao.getProveedorPorNombre(nombreProveedor.toLowerCase()).getId(), descuento, mdao.getMaterialPorNombre(nombreMaterial.toLowerCase()).getId());
+                       fdao.anadirFigura(figura);
+                    mensaje = "Se ha añadido la figura " + nombre;
+                    } else {
+                        mensaje = "Error, no se ha podido crear la figura de nombre: " + nombre + " debido a que ya existe una figura que se llama así. Por favor, revise las figuras disponibles y aségurese de ponerle un nombre que no exista.";
+                    }
                 }
+
                 mdao.cerrarConexion();
                 pdao.cerrarConexion();
                 pjdao.cerrarConexion();
@@ -321,6 +340,7 @@ public class CrudFigura extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         processRequest(request, response);
     }
 
@@ -335,6 +355,8 @@ public class CrudFigura extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+                request.setCharacterEncoding("UTF-8");
+
         processRequest(request, response);
     }
 

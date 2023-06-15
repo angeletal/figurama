@@ -53,7 +53,6 @@ public class CargarDatos {
         if (sesion.getAttribute("usuario") != null) {
             ListaDeseosDAO lddao = new ListaDeseosDAO();
             List<ArticuloListaDeseos> listaDeseos = lddao.obtenerListaDeseos(((Usuario) sesion.getAttribute("usuario")).getId());
-            //cosas
             sesion.setAttribute("listaDeseos", listaDeseos);
             lddao.cerrarConexion();
         }

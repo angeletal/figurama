@@ -46,7 +46,7 @@ public class VerFiguras extends HttpServlet {
         FiguraDAO fdao = new FiguraDAO();
         PersonajeDAO pjdao = new PersonajeDAO();
         if (pjdao.getPersonajePorNombre(nombre) == null) {
-            getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
+            response.sendRedirect("../../error.jsp");
             return;
         } else {
             List<Figura> figuras = fdao.getListaFiguras(nombre, "no");

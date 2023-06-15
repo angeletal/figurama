@@ -28,6 +28,7 @@ public class Figura {
     private int idProveedor;
     private int idMaterial;
     private int porcentajeDescuento;
+    private int esBaja;
     private List<ImagenFigura> imagenes;
     private String primeraImagen;
     private double precioConDescuento;
@@ -39,7 +40,49 @@ public class Figura {
         this.id = id;
     }
 
-    public Figura(int id, String nombre, String descripcion, Date fechaSalida, double precio, int stock, int altura, int idPersonaje, int idProveedor, int porcentajeDescuento, int idMaterial) {
+    
+       public Figura(String nombre, String descripcion, Date fechaSalida, double precio, int stock, int altura, int idPersonaje, int idProveedor, int porcentajeDescuento, int idMaterial) {
+        this.nombre = nombre;
+        this.descripcion=descripcion;
+        this.fechaSalida = fechaSalida;
+        this.precio = precio;
+        this.stock = stock;
+        this.altura = altura;
+        this.idPersonaje = idPersonaje;
+        this.idProveedor = idProveedor;
+        this.idMaterial = idMaterial;
+        this.porcentajeDescuento = porcentajeDescuento;
+      
+    }
+    
+    public Figura(int id, String nombre, String descripcion, Date fechaSalida, double precio, int stock, int altura, int idPersonaje, int idProveedor, int porcentajeDescuento, int idMaterial, int esBaja) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.fechaSalida = fechaSalida;
+        this.precio = precio;
+        this.stock = stock;
+        this.altura = altura;
+        this.idPersonaje = idPersonaje;
+        this.idProveedor = idProveedor;
+        this.idMaterial = idMaterial;
+        this.porcentajeDescuento = porcentajeDescuento;
+        ImagenFiguraDAO ifd = new ImagenFiguraDAO();
+        imagenes = ifd.obtenerImagenes(id);
+        this.esBaja=esBaja;
+
+        this.primeraImagen = imagenes.get(0).getUrl();
+
+        double valorDescuento = 0;
+        if (porcentajeDescuento != 0) {
+            valorDescuento = precio * (porcentajeDescuento / 100.0);
+        }
+
+        precioConDescuento = Math.floor((precio - valorDescuento) * 100) / 100.0;
+    }
+    
+    
+      public Figura(int id, String nombre, String descripcion, Date fechaSalida, double precio, int stock, int altura, int idPersonaje, int idProveedor, int porcentajeDescuento, int idMaterial) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -64,7 +107,7 @@ public class Figura {
         precioConDescuento = Math.floor((precio - valorDescuento) * 100) / 100.0;
     }
     
-     public Figura(String nombre, String descripcion, Date fechaSalida, double precio, int stock, int altura, int idPersonaje, int idProveedor, int porcentajeDescuento, int idMaterial) {
+     public Figura(String nombre, String descripcion, Date fechaSalida, double precio, int stock, int altura, int idPersonaje, int idProveedor, int porcentajeDescuento, int idMaterial, int esBaja) {
         this.nombre = nombre;
         this.descripcion=descripcion;
         this.fechaSalida = fechaSalida;
@@ -76,13 +119,15 @@ public class Figura {
         this.idMaterial = idMaterial;
         this.porcentajeDescuento = porcentajeDescuento;
       
-
-        
     }
+     
+    
 
     public boolean estaEnListaDeseos(List<ArticuloListaDeseos> listaDeseos) {
         return listaDeseos.contains(new ArticuloListaDeseos(this));
     }
+    
+    
 
     public int getId() {
         return id;
@@ -188,6 +233,16 @@ public class Figura {
     public void setPrimeraImagen(String primeraImagen) {
         this.primeraImagen = primeraImagen;
     }
+
+    public int getEsBaja() {
+        return esBaja;
+    }
+
+    public void setEsBaja(int esBaja) {
+        this.esBaja = esBaja;
+    }
+    
+    
 
     public List<Material> getMateriales() {
         MaterialDAO mdao = new MaterialDAO();

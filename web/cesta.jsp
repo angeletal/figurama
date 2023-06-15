@@ -86,6 +86,9 @@
                                                                             <a id="linkAcceso" class="d-none" href="#">Acceder</a>
 
                                         <a class="dropdown-item" href="#">Editar perfil</a>
+                                            <c:if test="${sessionScope.usuario.rol eq 'Admin'}">
+                                            <a class="dropdown-item" href="admin">Volver al menú de administración</a>
+                                        </c:if>
                                         <a class="dropdown-item" href="CerrarSesion">Cerrar sesión</a>
                                     </div>
                                 </c:if>
@@ -289,6 +292,43 @@
                                                             <span class="custom-label">Guardar datos de la tarjeta</span>
                                                         </label>
                                                 </c:if>
+                                                    <hr>
+                                                     <div class="form-outline mb-3">
+                                                        <label class="form-label" for="pais">País</label>
+
+                                                        <input type="text" id="pais" name="pais" class="form-control form-control-lg"
+                                                               placeholder="Ej: España"/>
+                                                        <p class="text-center w-100 text-danger" id="errorPais"></p>
+
+                                                    </div>
+                                                    
+                                                    <div class="form-outline mb-3">
+                                                        <label class="form-label" for="pais">Provincia</label>
+
+                                                        <input type="text" id="provincia" name="provincia" class="form-control form-control-lg"
+                                                               placeholder="Ej: Sevilla"/>
+                                                        <p class="text-center w-100 text-danger" id="errorProvincia"></p>
+
+                                                    </div>
+                                                    
+                                                    <div class="form-outline mb-3">
+                                                        <label class="form-label" for="municipio">Municipio</label>
+
+                                                        <input type="text" id="municipio" name="municipio" class="form-control form-control-lg"
+                                                               placeholder="Ej: Camas"/>
+                                                        <p class="text-center w-100 text-danger" id="errorMunicipio"></p>
+
+                                                    </div>
+                                                    
+                                                                             <div class="form-outline mb-3">
+                                                        <label class="form-label" for="municipio">Dirección y número</label>
+
+                                                        <input type="text" id="calle" name="calle" class="form-control form-control-lg"
+                                                               placeholder="Ej: Calle Málaga 12"/>
+                                                        <p class="text-center w-100 text-danger" id="errorCalle"></p>
+
+                                                    </div>
+                                                    
                                                 <input type="submit" id="enviar" class="btn btn-primary btn-block btn-lg w-100 m-0 mb-5 mt-5" value="Realizar compra"/>
                                                 <button type="button" class="btn btn-primary btn-block btn-lg w-100 m-0" onclick="vaciarCesta()">Vaciar cesta</button>
                                                     </form>

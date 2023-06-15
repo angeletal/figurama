@@ -58,7 +58,6 @@ function buscarCatalogo() {
             }
         }
     });
-    console.log(inputPrecioMinimo.value);
     var data = new URLSearchParams();
     data.append("series", checkboxesSerie);
     data.append("proveedores", checkboxesProveedor);

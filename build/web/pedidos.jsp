@@ -93,6 +93,9 @@
                                         <a id="linkAcceso" class="d-none" href="#">Acceder</a>
 
                                         <a class="dropdown-item" href="#">Editar perfil</a>
+                                            <c:if test="${sessionScope.usuario.rol eq 'Admin'}">
+                                            <a class="dropdown-item" href="admin">Volver al menú de administración</a>
+                                        </c:if>
                                         <a class="dropdown-item" href="CerrarSesion">Cerrar sesión</a>
                                     </div>
                                 </c:if>
@@ -160,31 +163,65 @@
                         <th>Estado</th>
                         <th>Dirección destino</th>
                         <th>Detalles</th>
+                        <th>Total</th>
                     </tr>
+                  <c:set var="precioTotal" value="0"/>
+
                     <c:forEach items="${pedidos}" var="pedido">
                         <tr>
-                            <td><c:out value="${pedido.id}"/></td>                            
+                            <td><c:out value="${pedido.id}"/></td>
                             <td><c:out value="${pedido.fecha}"/></td>
                             <td><c:out value="${pedido.estado}"/></td>
                             <td><c:out value="${pedido.direccion}"/></td>
-                            <td>
-                               <c:forEach items="${pedido.articulos}" var="articulo"> 
-                                   <p>Articulo1:<br>
-                                       Nombre:<c:out value="${articulo.figura.nombre}"/>
-                                       Cantidad:<c:out value="${articulo.cantidad}"/>
-                                       Precio Ud:<c:out value="${articulo.precio}"/>
-                                   </p>
-                               </c:forEach>
-                            </td>
+                            <td>${pedido.precioTotal}€</td>
+
+                            <td><button type="button" class="detallesPedido" data-toggle="modal" data-target="#modalDetallesPedido" onclick='mostrarPedido(${pedido.articulosJson}, ${pedido.id})'>Ver detalles</button></td>
                         </tr>
                     </c:forEach>
 
                 </table>
 
             </c:if>
+            
+            
+            
+               <div class="modal fade" id="modalDetallesPedido" tabindex="-1" aria-labelledby="modalDescripcionFiguraLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Detalles del pedido número:<span id="pedidoDetallesNumero"></span></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="pedidoDetallesArticulos" style="text-align: left !important; size: 1em !important"></p>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <%@include file="footer.jsp"%>
 
+<script>
+            function mostrarPedido(articulos, numero) {
+                var detalles = "";
+                articulos.forEach(function (articulo) {
+                  detalles += "<br>- Nombre Figura: <br>" + articulo.figura.nombre +
+                        "<br>- Cantidad: " + articulo.cantidad +
+                        "<br>- Precio: " + (articulo.precio * articulo.cantidad) +
+                        "€<br>"; // Agregamos dos saltos de línea después de cada artículo
+                });
+                $('#pedidoDetallesArticulos').html(detalles);
+                $('#pedidoDetallesNumero').text(" " + numero);
+                $('#modalDetallesPedido').modal('show');
+
+            }
+
+        </script>
 
 
 

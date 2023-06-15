@@ -47,7 +47,7 @@ public class VerFigura extends HttpServlet {
             fdao.cerrarConexion();
             getServletContext().getRequestDispatcher("/figura.jsp").forward(request, response);
         } else {
-            getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
+            response.sendRedirect("../error.jsp");
            return;
         }
     }

@@ -29,10 +29,10 @@ public class FiltroAdmin extends HttpServlet {
             throws ServletException, IOException {
         HttpSession sesion = request.getSession();
 
-        if(sesion.getAttribute("usuario")==null || !((Usuario)sesion.getAttribute("usuario")).getRol().equals("Admin")){
+       /* if(sesion.getAttribute("usuario")==null || !((Usuario)sesion.getAttribute("usuario")).getRol().equals("Admin")){
             response.sendRedirect("index.jsp");
             return;
-        }
+        }*/
         
         if (sesion.getAttribute("tablaMostrada") != null) {
             request.setAttribute("tablaMostrada", sesion.getAttribute("tablaMostrada"));
